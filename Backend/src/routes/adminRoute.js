@@ -1,41 +1,23 @@
-// adminRoutes.js
-
 const express = require('express');
-const auth = require('../middleware/authorizationMiddleware.js');
 const router = express.Router();
-const adminController = require('..//controllers/adminController.js');
-const Admin = require('../database/models/adminSchema.js');
+const auth = require('../middleware/authorizationMiddleware.js');
+const adminController = require('../controllers/adminController.js');
 
+// Admin CRUD
 router.post('/admin', auth(["admin"]), adminController.createAdmin);
-
 router.get('/admin', auth(["admin"]), adminController.getAllAdmins);
-
+router.put('/admin/:id', auth(["admin"]), adminController.updateAdminById);
 router.delete('/admin/:id', auth(["admin"]), adminController.deleteAdminById);
 
-router.get('/admin/:id', auth(["admin"]), adminController.getAdminById);
+// Event CRUD
+router.post('/event', auth(["admin"]), adminController.createEvent);
+router.get('/event/:id', auth(["admin"]), adminController.getEventById);
+router.get('/event', auth(["admin"]), adminController.getAllEvents);
+router.put('/event/:id', auth(["admin"]), adminController.updateEventById);
+router.delete('/event/:id', auth(["admin"]), adminController.deleteEventById);
 
-router.put('/admin/:id', auth(["admin"]), adminController.updateAdminById);
-
-router.post('/admin/acceptEvent/:id', auth(["admin"]), adminController.acceptEvent);
-
-router.post('/admin/rejectEvent/:id', auth(["admin"]), adminController.rejectEvent);
-
-router.post('/admin/acceptUser/:id', auth(["admin"]), adminController.acceptUser);
-
-router.post('/admin/createEvent', auth(["admin"]), adminController.createEvent);
-
-router.post('/admin/rejectEvent', auth(["admin"]), adminController.rejectEvent);
-
-router.post('/admin/getAllEvents', auth(["admin"]), adminController.getAllEvents);
-
-router.post('/admin/deleteEventById', auth(["admin"]), adminController.deleteEventById);
-
-router.post('/admin/getEventById', auth(["admin"]), adminController.getEventById);
-
-router.post('/admin/getEventById', auth(["admin"]), adminController.getEventById);
-
-
+// Accept/Reject Event
+router.post('/event/accept/:id', auth(["admin"]), adminController.acceptEvent);
+router.post('/event/reject/:id', auth(["admin"]), adminController.rejectEvent);
 
 module.exports = router;
-
-// Path: Backend/src/routes/index.js
