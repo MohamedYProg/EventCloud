@@ -1,17 +1,21 @@
-const dynamoose = require('dynamoose');
+const AWS = require('aws-sdk');
+require('dotenv').config();
 
-// Configure Dynamoose to use local DynamoDB instance or AWS credentials
-dynamoose.aws.sdk.config.update({
+AWS.config.update({
+    region: "us-west-1", // Corrected region name
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION || 'us-east-1'
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
 
-// Connect Dynamoose to the local or AWS DynamoDB instance
-if (process.env.NODE_ENV === 'production') {
-    dynamoose.aws.ddb.local(process.env.DYNAMODB_ENDPOINT);
-}
+const db = new AWS.DynamoDB.DocumentClient();
 
-module.exports = dynamoose;
+const Table_users = 'users';
+const Table_event = 'Event';
+const Table_admin = 'Admin';
 
-// Path: Backend/src/database/database.js
+module.exports = {
+    db,
+    Table_users,
+    Table_event,
+    Table_admin
+};
