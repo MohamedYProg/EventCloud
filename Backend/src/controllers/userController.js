@@ -1,5 +1,5 @@
 // Path: Backend/src/controllers/userController.js
-const { db, Table_users } = require('../database/database.js');
+const { db, Table_users,Table_event } = require('../database/database.js');
 
 // const User = require('../database/models/userSchema');
 // const Event = require('../database/models/eventSchema');
@@ -50,13 +50,63 @@ async function login(email, password) {
     }
 }
 
-async function Regestier(name, dob,email,password,ImageProfile) {
-
+async function register(name, dob, email, password, ImageProfile) {
     try {
         const params = {
             TableName: Table_users,
-}
+            Item: {
+                "id": uuid(), // Generate a unique ID for the user
+                "name": name,
+                "dob": dob,
+                "email": email,
+                "password": password,
+                "ImageProfile": ImageProfile
+                // Add more attributes if needed
+            }
+        };
+
+        // Put the item into the table
+        await db.put(params).promise();
+
+        return { message: 'User registered successfully' };
+    } catch (error) {
+        console.error("Error registering user:", error);
+        throw error; // Throw the error to be handled by the caller
     }
 }
 
- module.exports ={login}
+
+
+async function user_create_event(name,date,Capacity,Location,BookedPlaces,Owner,Category,Image,Duration,Description) {
+    try {
+        const params = {
+            TableName: Table_event,
+            Item: {
+                "id": uuid(), // Generate a unique ID for the user
+                "name": name,
+                "date": date,
+                "Capacity": Capacity,
+                "Location": Location,
+                "BookedPlaces": BookedPlaces,
+                "Owner":Owner,
+                "Category":Category,
+                "Image":Image,
+                "Duration":Duration,
+                "Description":Description,
+
+
+                // Add more attributes if needed
+            }
+        };
+
+        // Put the item into the table
+        await db.put(params).promise();
+
+        return { message: 'event added successfully' };
+    } catch (error) {
+        console.error("Error event not added:", error);
+        throw error; // Throw the error to be handled by the caller
+    }
+}
+
+ module.exports ={login,register,user_create_event}
