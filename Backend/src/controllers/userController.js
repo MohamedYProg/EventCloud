@@ -1,73 +1,62 @@
 // Path: Backend/src/controllers/userController.js
+const { db, Table_users } = require('../database/database.js');
 
-const User = require('../database/models/userSchema');
-const Event = require('../database/models/eventSchema'); // Assuming you have an Event model
+// const User = require('../database/models/userSchema');
+// const Event = require('../database/models/eventSchema');
 const jwt = require('jsonwebtoken');
-const uuid = require('uuid').v4; // Import uuid to generate unique IDs
+const uuid = require('uuid').v4;
 require('dotenv').config();
-const secretKey = process.env.SECRET_KEY;
+const AWS = require('aws-sdk');
 
-const userController = {
-    register: async (req, res) => {
-        const { name, dob, email, password } = req.body;
-        const id = uuid(); // Generate unique ID for the user
-        const newUser = new User({ id, name, dob, email, password });
+// const secretKey = process.env.SECRET_KEY;
 
-        try {
-            await newUser.save();
-            res.status(201).json({ message: 'User created successfully' });
-        } catch (error) {
-            res.status(500).json({ message: 'Internal Server Error' });
+AWS.config.httpOptions = { timeout: 5000 };
+
+AWS.config.update({
+    region: "us-west-1",
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    maxRetries: 10,
+    retryDelayOptions: { base: 200 }
+});
+
+
+async function login(email, password) {
+    try {
+        const params = {
+            TableName: Table_users,
+            FilterExpression: "#email = :email AND #password = :password",
+            ExpressionAttributeNames: {
+                "#email": "email",
+                "#password": "password"
+            },
+            ExpressionAttributeValues: {
+                ":email": email,
+                ":password": password
+            }
+        };
+
+        const result = await db.scan(params).promise();
+        if (result.Items.length === 0) {
+            throw new Error("Invalid email or password");
         }
-    },
 
-    login: async (req, res) => {
-        const { email, password } = req.body;
-
-        try {
-            const user = await User.scan('email').eq(email).exec();
-            if (user.length === 0) {
-                return res.status(404).json({ message: 'User not found' });
-            }
-
-            if (user[0].password !== password) {
-                return res.status(401).json({ message: 'Unauthorized' });
-            }
-
-            // Create token
-            const token = jwt.sign({ email: user[0].email, role: 'user' }, secretKey);
-            res.cookie('token', token, { httpOnly: true });
-            res.status(200).json({ message: 'Login successful' });
-        } catch (error) {
-            res.status(500).json({ message: 'Internal Server Error' });
-        }
-    },
-
-    requestEvent: async (req, res) => {
-        const { name, description, date, location, image } = req.body;
-
-        try {
-            // Check if user is authenticated
-            const token = req.cookies.token;
-            if (!token) {
-                return res.status(401).json({ message: 'Unauthorized' });
-            }
-
-            // Decode token to get user information
-            const decoded = jwt.verify(token, secretKey);
-            if (!decoded || !decoded.email) {
-                return res.status(401).json({ message: 'Unauthorized' });
-            }
-
-            // Create event request
-            const event = new Event({ name, description, date, location, image, requestedBy: decoded.email });
-            await event.save();
-
-            res.status(201).json({ message: 'Event request submitted successfully', event });
-        } catch (error) {
-            res.status(500).json({ message: 'Internal Server Error' });
-        }
+        // Assuming there's only one user with the given email and password,
+        // return the first item found
+        return result.Items[0];
+    } catch (error) {
+        console.error("Error logging in:", error.message);
+        throw error; // Throw the error to be handled by the caller
     }
-};
+}
 
-module.exports = userController;
+async function Regestier(name, dob,email,password,ImageProfile) {
+
+    try {
+        const params = {
+            TableName: Table_users,
+}
+    }
+}
+
+ module.exports ={login}
