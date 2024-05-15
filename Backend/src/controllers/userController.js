@@ -13,7 +13,7 @@ const AWS = require('aws-sdk');
 AWS.config.httpOptions = { timeout: 5000 };
 
 AWS.config.update({
-    region: "us-west-1",
+    region: "eu-north-1",
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     maxRetries: 10,

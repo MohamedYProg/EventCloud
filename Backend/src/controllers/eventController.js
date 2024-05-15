@@ -8,7 +8,7 @@ AWS.config.httpOptions = { timeout: 5000 }; // Setting a timeout to prevent hang
 // Initialize AWS with your credentials
 // Initialize AWS with your credentials and region
 AWS.config.update({
-    region: "us-west-1", // Update with your desired region
+    region: "eu-north-1", // Update with your desired region
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     maxRetries: 10,
@@ -58,11 +58,11 @@ async function booking(eventId, numberOfPlaces) {
     try {
         // Fetch the event by ID
         const event = await fetchEventById(eventId);
-        
+
         // Update the event's capacity and booked places
         event.Capacity -= numberOfPlaces;
         event.BookedPlaces += numberOfPlaces;
-        
+
         // Update the event in the database
         const params = {
             TableName: Table_event,
@@ -79,9 +79,9 @@ async function booking(eventId, numberOfPlaces) {
             },
             ReturnValues: "UPDATED_NEW" // Return the updated attributes
         };
-        
+
         await db.update(params).promise();
-        
+
         return event; // Return the updated event
     } catch (error) {
         console.error("Error booking event:", error);
@@ -110,6 +110,6 @@ async function searchEventsByName(name) {
     }
 }
 
-module.exports = { getEventsByCategory,fetchEventById,booking,searchEventsByName};
+module.exports = { getEventsByCategory, fetchEventById, booking, searchEventsByName };
 
 // Path: Backend/src/controllers/eventController.js
