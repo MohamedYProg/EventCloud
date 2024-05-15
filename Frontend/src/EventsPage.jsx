@@ -3,6 +3,12 @@ import { Link } from 'react-router-dom';
 
 function EventsPage() {
     const [showModal, setShowModal] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const events = [
+        { name: 'Event 1', description: 'Event 1 Description...' },
+        { name: 'Event 2', description: 'Event 2 Description...' }
+    ];
 
     const handleBookClick = () => {
         setShowModal(true);
@@ -16,6 +22,10 @@ function EventsPage() {
     const handleCancelBooking = () => {
         setShowModal(false);
     };
+
+    const filteredEvents = events.filter(event =>
+        event.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div className="EventsPage">
@@ -31,18 +41,20 @@ function EventsPage() {
             </header>
             <div className="Content">
                 <h1>Events</h1>
-                <div className="Event">
-                    <h2>Event 1</h2>
-                    <p>Event 1 Description...</p>
-                    <button onClick={handleBookClick}>Book</button>
-                    <button>View Info</button>
-                </div>
-                <div className="Event">
-                    <h2>Event 2</h2>
-                    <p>Event 2 Description...</p>
-                    <button onClick={handleBookClick}>Book</button>
-                    <button>View Info</button>
-                </div>
+                <input
+                    type="text"
+                    placeholder="Search events..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                {filteredEvents.map((event, index) => (
+                    <div className="Event" key={index}>
+                        <h2>{event.name}</h2>
+                        <p>{event.description}</p>
+                        <button onClick={handleBookClick}>Book</button>
+                        <button>View Info</button>
+                    </div>
+                ))}
             </div>
             {showModal && (
                 <div className="modal">
