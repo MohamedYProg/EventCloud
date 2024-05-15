@@ -9,10 +9,6 @@ function App() {
         <Router>
             <Routes>
                 <Route
-                    path="/"
-                    element={<MainLayout><Homepage /></MainLayout>}
-                />
-                <Route
                     path="/login"
                     element={<MainLayout><Login /></MainLayout>}
                 />
@@ -20,3 +16,5 @@ function App() {
         </Router>
     )
 }
+
+export default App;
