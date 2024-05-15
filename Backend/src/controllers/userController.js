@@ -1,5 +1,5 @@
 // Path: Backend/src/controllers/userController.js
-const { db, Table_users,Table_event } = require('../database/database.js');
+const { db, Table_users, Table_event } = require('../database/database.js');
 
 // const User = require('../database/models/userSchema');
 // const Event = require('../database/models/eventSchema');
@@ -77,7 +77,7 @@ async function register(name, dob, email, password, ImageProfile) {
 
 
 
-async function user_create_event(name,date,Capacity,Location,BookedPlaces,Owner,Category,Image,Duration,Description) {
+async function user_create_event(name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description) {
     try {
         const params = {
             TableName: Table_event,
@@ -88,11 +88,11 @@ async function user_create_event(name,date,Capacity,Location,BookedPlaces,Owner,
                 "Capacity": Capacity,
                 "Location": Location,
                 "BookedPlaces": BookedPlaces,
-                "Owner":Owner,
-                "Category":Category,
-                "Image":Image,
-                "Duration":Duration,
-                "Description":Description,
+                "Owner": Owner,
+                "Category": Category,
+                "Image": Image,
+                "Duration": Duration,
+                "Description": Description,
 
 
                 // Add more attributes if needed
@@ -109,4 +109,67 @@ async function user_create_event(name,date,Capacity,Location,BookedPlaces,Owner,
     }
 }
 
- module.exports ={login,register,user_create_event}
+async function user_delete_event(id) {
+    try {
+        const params = {
+            TableName: Table_event,
+            Key: {
+                "id": id
+            }
+        };
+
+        // Delete the item from the table
+        await db.delete(params).promise();
+
+        return { message: 'event deleted successfully' };
+    } catch (error) {
+        console.error("Error event not deleted:", error);
+        throw error; // Throw the error to be handled by the caller
+    }
+}
+
+async function user_update_event(id, name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description) {
+    try {
+        const params = {
+            TableName: Table_event,
+            Key: {
+                "id": id
+            },
+            UpdateExpression: "set #name = :name, #date = :date, #Capacity = :Capacity, #Location = :Location, #BookedPlaces = :BookedPlaces, #Owner = :Owner, #Category = :Category, #Image = :Image, #Duration = :Duration, #Description = :Description",
+            ExpressionAttributeNames: {
+                "#name": "name",
+                "#date": "date",
+                "#Capacity": "Capacity",
+                "#Location": "Location",
+                "#BookedPlaces": "BookedPlaces",
+                "#Owner": "Owner",
+                "#Category": "Category",
+                "#Image": "Image",
+                "#Duration": "Duration",
+                "#Description": "Description"
+            },
+            ExpressionAttributeValues: {
+                ":name": name,
+                ":date": date,
+                ":Capacity": Capacity,
+                ":Location": Location,
+                ":BookedPlaces": BookedPlaces,
+                ":Owner": Owner,
+                ":Category": Category,
+                ":Image": Image,
+                ":Duration": Duration,
+                ":Description": Description
+            }
+        };
+
+        // Update the item in the table
+        await db.update(params).promise();
+
+        return { message: 'event updated successfully' };
+    } catch (error) {
+        console.error("Error event not updated:", error);
+        throw error; // Throw the error to be handled by the caller
+    }
+}
+
+module.exports = { login, register, user_create_event }

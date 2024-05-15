@@ -7,7 +7,6 @@ app.use(bodyParser.json());
 
 //const authenticationMiddleware = require('./middleware/authenticationMiddleware.js')
 const userRouter = require('./routes/userRoute.js');
-const adminRoutes = require('./routes/adminRoute.js')
 //const authRouter = require('./routes/authRoutes.js')
 const eventsRoute = require('./routes/eventRoute.js');
 
@@ -23,8 +22,7 @@ app.use(cors({
 
 //app.use('/api/v1', authRouter)
 //app.use(authenticationMiddleware)
- app.use('/api/v1/user', userRouter)
-app.use('/api/v1/admin', adminRoutes)
+app.use('/api/v1/user', userRouter)
 
 //app.get('/', (req, res) => res.send('Hello world!'))
 app.use('/api/v1', eventsRoute);
