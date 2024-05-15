@@ -69,3 +69,5 @@ router.get('/events/search', async (req, res) => {
 
 
 module.exports = router;
+
+// Path: Backend/src/routes/eventRoute.js

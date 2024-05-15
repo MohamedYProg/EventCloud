@@ -104,3 +104,5 @@ router.put('/update_event', async (req, res) => {
 });
 
 module.exports = router;
+
+// Path: Backend/src/routes/userRoute.js

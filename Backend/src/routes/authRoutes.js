@@ -8,4 +8,4 @@ router.post('/login', userController.login);
 
 module.exports = router;
 
-// Path: Backend/src/controllers/userController.js
+// Path: Backend/src/routes/authRoute.js

@@ -110,13 +110,6 @@ async function searchEventsByName(name) {
     }
 }
 
-
-
-
-
-
-
-
-
-
 module.exports = { getEventsByCategory,fetchEventById,booking,searchEventsByName};
+
+// Path: Backend/src/controllers/eventController.js
