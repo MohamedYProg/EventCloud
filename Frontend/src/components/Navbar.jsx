@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Login from './Login'; // Assuming you have a Login component
+import { LightOceanTheme} from './themes'; // Assuming you want a default theme
+
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
