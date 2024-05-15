@@ -172,4 +172,4 @@ async function user_update_event(id, name, date, Capacity, Location, BookedPlace
     }
 }
 
-module.exports = { login, register, user_create_event }
+module.exports = { login, register, user_create_event, user_delete_event, user_update_event }
