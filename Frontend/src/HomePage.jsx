@@ -6,12 +6,11 @@ function HomePage() {
         <div className="HomePage">
             <header className="App-header">
                 <nav className="Menu-bar">
-                    {/* Your menu items go here */}
                     <ul>
                         <li><Link to="/">Home</Link></li>
                         <li><Link to="/events">Events</Link></li>
-                        {/* <li><a href="#">About</a></li>
-                        <li><a href="#">Contact</a></li> */}
+                        <li><Link to="/about">About</Link></li>
+                        <li><Link to="/contact">Contact</Link></li>
                     </ul>
                 </nav>
             </header>
