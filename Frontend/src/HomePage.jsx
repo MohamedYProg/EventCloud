@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function HomePage() {
     return (
@@ -7,16 +8,16 @@ function HomePage() {
                 <nav className="Menu-bar">
                     {/* Your menu items go here */}
                     <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Events</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><Link to="/">Home</Link></li>
+                        <li><Link to="/events">Events</Link></li>
+                        {/* <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li> */}
                     </ul>
                 </nav>
             </header>
             <div className="Content">
-                {/* Your main content goes here */}
                 <h1>Welcome to the Home Page!</h1>
-                <p>This is your Events booking website.</p>
+                <p>This is your home page content.</p>
             </div>
         </div>
     );
