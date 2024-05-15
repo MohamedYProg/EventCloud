@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { login, register,user_create_event,user_delete_event,user_update_event } = require('../controllers/userController.js');
+const { login, register, user_create_event, user_delete_event, user_update_event } = require('../controllers/userController.js');
 
 // Route to handle user login
 router.post('/login', async (req, res) => {
@@ -13,7 +13,7 @@ router.post('/login', async (req, res) => {
 
         // Call the login function from the controller
         const user = await login(email, password);
-        
+
         // If login is successful, you can return user details or a success message
         res.status(200).json({ message: 'Login successful', user });
     } catch (error) {
@@ -33,7 +33,7 @@ router.post('/register', async (req, res) => {
 
         // Call the register function from the controller
         const result = await register(name, dob, email, password, ImageProfile);
-        
+
         // If registration is successful, you can return a success message
         res.status(201).json({ message: 'Registration successful' });
     } catch (error) {
@@ -54,7 +54,7 @@ router.post('/create_event', async (req, res) => {
 
         // Call the user_create_event function from the controller
         const result = await user_create_event(name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description);
-        
+
         // If event creation is successful, you can return a success message
         res.status(201).json({ message: 'Event created successfully' });
     } catch (error) {
@@ -63,9 +63,8 @@ router.post('/create_event', async (req, res) => {
     }
 });
 
-
-router.delete('/delete_event/:id', async (req, res) => {
-    const { id } = req.params; // Access id from req.params
+router.delete('/delete_event', async (req, res) => {
+    const { id } = req.body;
 
     try {
         // Check if the event ID is provided
@@ -84,13 +83,12 @@ router.delete('/delete_event/:id', async (req, res) => {
     }
 });
 
-router.put('/update_event/:id', async (req, res) => {
-    const { id } = req.params; // Access id from req.params
-    const { name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description } = req.body;
+router.put('/update_event', async (req, res) => {
+    const { id, name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description } = req.body;
 
     try {
         // Check if all required fields are provided
-        if (!name || !date || !Capacity || !Location || !Owner || !Category || !Image || !Duration || !Description) {
+        if (!id || !name || !date || !Capacity || !Location || !Owner || !Category || !Image || !Duration || !Description) {
             return res.status(400).json({ error: 'All fields are required for updating an event' });
         }
 
@@ -105,5 +103,6 @@ router.put('/update_event/:id', async (req, res) => {
     }
 });
 
-
 module.exports = router;
+
+// Path: Backend/src/routes/userRoute.js
