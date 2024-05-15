@@ -16,7 +16,7 @@ function Login() {
           return;
         }
         const login= await axios.post(
-          'http://localhost:3000/api/v1/login',
+          'http://localhost:3000/login',
           {
             email,
             password
