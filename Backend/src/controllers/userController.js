@@ -13,7 +13,7 @@ const AWS = require('aws-sdk');
 AWS.config.httpOptions = { timeout: 5000 };
 
 AWS.config.update({
-    region: "us-east-1",
+    region: "us-west-1",
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     maxRetries: 10,
@@ -172,6 +172,6 @@ async function user_update_event(id, name, date, Capacity, Location, BookedPlace
     }
 }
 
-module.exports = { login, register, user_create_event }
+module.exports = { login, register, user_create_event, user_delete_event, user_update_event}
 
 // Path: Backend/src/controllers/userController.js
