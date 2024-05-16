@@ -33,11 +33,12 @@ function EventsPage() {
             <header className="App-header">
                 <nav className="Menu-bar">
                     <ul>
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/about">About</Link></li>
-                        <li><Link to="/contact">Contact</Link></li>
                         <li><Link to="/login">Login</Link></li>
                         <li><Link to="/signup">Sign Up</Link></li>
+                        <li><Link to="/">Home</Link></li>
+                        <li><Link to="/events">Events</Link></li>
+                        <li><Link to="/about">About</Link></li>
+                        <li><Link to="/contact">Contact</Link></li>
                     </ul>
                 </nav>
             </header>

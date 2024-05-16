@@ -5,13 +5,15 @@ import HomePage from './HomePage';
 import EventsPage from './EventsPage';
 import Login from './Login';
 import Signup from './Signup';
+import AboutPage from './AboutPage';
+import ContactUsPage from './ContactUsPage';
 
 // Layout component
 const Layout = ({ children }) => {
   return (
     <div className="App">
       <header>
-        <h1 className="App-title">Event Booking Application</h1>
+        <h1 className="App-title">Eventify Booking Application</h1>
       </header>
       <main>{children}</main>
     </div>
@@ -21,26 +23,20 @@ const Layout = ({ children }) => {
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <HomePage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/events"
-          element={
-            <Layout>
-              <EventsPage />
-            </Layout>
-          }
-        />
-      </Routes>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/events" element={<Layout><EventsPage /></Layout>} />
+          <Route path="/about" element={<Layout><AboutPage /></Layout>} />
+          <Route path="/contact" element={<Layout><ContactUsPage /></Layout>} />
+        </Routes>
+      </div>
     </Router>
   );
+
 }
 
 export default App;
