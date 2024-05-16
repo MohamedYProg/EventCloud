@@ -13,7 +13,7 @@ const AWS = require('aws-sdk');
 AWS.config.httpOptions = { timeout: 5000 };
 
 AWS.config.update({
-    region: "eu-north-1",
+    region: "us-west-1",
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     maxRetries: 10,
@@ -50,7 +50,7 @@ async function login(email, password) {
     }
 }
 
-async function register(name, dob, email, password, ImageProfile) {
+async function register(name, dob, email, password,/* ImageProfile*/) {
     try {
         const params = {
             TableName: Table_users,
@@ -60,7 +60,7 @@ async function register(name, dob, email, password, ImageProfile) {
                 "dob": dob,
                 "email": email,
                 "password": password,
-                "ImageProfile": ImageProfile
+                // "ImageProfile": ImageProfile
                 // Add more attributes if needed
             }
         };

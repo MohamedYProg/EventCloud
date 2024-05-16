@@ -24,15 +24,15 @@ function Signup() {
       }
 
       const response = await axios.post(
-        'http://localhost:3001/api/v1/user/register',
+        'http://localhost:3000/api/v1/user/register',
         {
           name,
           dob,
           email,
           password
-        },
-        { withCredentials: true }
-      );
+        }, {
+      withCredentials: true // Include credentials in the request
+    });
 
       setMessage(response.data.message);
       // Redirect to login page after successful signup

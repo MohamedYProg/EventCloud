@@ -26,7 +26,7 @@ function Login() {
           return;
         }
         const login = await axios.post(
-          'http://localhost:3001/login',
+          'http://localhost:3000/login',
           {
             email,
             password

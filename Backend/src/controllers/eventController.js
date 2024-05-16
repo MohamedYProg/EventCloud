@@ -8,7 +8,7 @@ AWS.config.httpOptions = { timeout: 5000 }; // Setting a timeout to prevent hang
 // Initialize AWS with your credentials
 // Initialize AWS with your credentials and region
 AWS.config.update({
-    region: "eu-north-1", // Update with your desired region
+    region: "us-west-1", // Update with your desired region
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     maxRetries: 10,

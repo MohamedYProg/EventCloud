@@ -24,15 +24,15 @@ router.post('/login', async (req, res) => {
 
 // Route to handle user registration
 router.post('/register', async (req, res) => {
-    const { name, dob, email, password, ImageProfile } = req.body;
+    const { name, dob, email, password,/* ImageProfile */ } = req.body;
 
     try {
-        if (!name || !dob || !email || !password || !ImageProfile) {
+        if (!name || !dob || !email || !password/* || !ImageProfile */) {
             return res.status(400).json({ error: 'All fields are required for registration' });
         }
 
         // Call the register function from the controller
-        const result = await register(name, dob, email, password, ImageProfile);
+        const result = await register(name, dob, email, password/*, ImageProfile */);
 
         res.status(201).json({ message: 'Registration successful' });
     } catch (error) {
