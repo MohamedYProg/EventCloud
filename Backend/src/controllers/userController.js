@@ -50,7 +50,7 @@ async function login(email, password) {
     }
 }
 
-async function register(name, dob, email, password, ImageProfile) {
+async function register(name, dob, email, password/*, ImageProfile*/) {
     try {
         const params = {
             TableName: Table_users,
@@ -60,7 +60,7 @@ async function register(name, dob, email, password, ImageProfile) {
                 "dob": dob,
                 "email": email,
                 "password": password,
-                "ImageProfile": ImageProfile
+                // "ImageProfile": ImageProfile
                 // Add more attributes if needed
             }
         };
