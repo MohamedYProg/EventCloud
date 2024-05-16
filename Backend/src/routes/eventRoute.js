@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getEventsByCategory,fetchEventById,booking,searchEventsByName } = require('../controllers/eventController.js');
+const { getEventsByCategory, fetchEventById, booking, searchEventsByName } = require('../controllers/eventController.js');
 
 // Route to get events by category
 router.get('/events/category/:category', async (req, res) => {

@@ -15,7 +15,6 @@ function EventsPage() {
     };
 
     const handleConfirmBooking = () => {
-        // Add logic to handle booking the event
         setShowModal(false);
     };
 
