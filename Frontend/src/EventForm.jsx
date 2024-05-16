@@ -82,30 +82,30 @@ function EventForm() {
         </label>
         <br />
         <label>
-            Owner:
-            <input type="text" value={eventOwner} onChange={(e) => setEventOwner(e.target.value)} />
+          Owner:
+          <input type="text" value={eventOwner} onChange={(e) => setEventOwner(e.target.value)} />
         </label>
         <br />
         <label>
-            Category:
-            <input type="number" value={eventCategory} onChange={(e) => setEventCategory(e.target.value)} />
+          Category:
+          <input type="number" value={eventCategory} onChange={(e) => setEventCategory(e.target.value)} />
         </label>
         <br />
-            <label>
-                Duration:
-                <input type="number" value={eventDuration} onChange={(e) => setEventDuration(e.target.value)} />
-            </label>
-            <br />
-            <label>
-                Description:
-                <input type="text" value={eventDescription} onChange={(e) => setEventDescription(e.target.value)} />
-            </label>
-            <br />
-            <label>
-                Image:
-                <input type="text" value={eventImage} onChange={(e) => setEventImage(e.target.value)} />
-            </label>
-            <br />
+        <label>
+          Duration:
+          <input type="number" value={eventDuration} onChange={(e) => setEventDuration(e.target.value)} />
+        </label>
+        <br />
+        <label>
+          Description:
+          <input type="text" value={eventDescription} onChange={(e) => setEventDescription(e.target.value)} />
+        </label>
+        <br />
+        <label>
+          Image:
+          <input type="text" value={eventImage} onChange={(e) => setEventImage(e.target.value)} />
+        </label>
+        <br />
         <button type="submit" className="blue-button" onClick={handleSubmit}>Create Event</button>
       </form>
     </div>

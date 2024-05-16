@@ -1,89 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios'; // Import axios for making HTTP requests
 
 function EventsPage() {
-    const [events, setEvents] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [events, setEvents] = useState([]); // State to hold events
 
     useEffect(() => {
-        //fetchAllEvents(); // Fetch all events initially
+        // Fetch events when the component mounts
+        getAllEvents();
     }, []);
 
-    /*const fetchAllEvents = async () => {
+    const getAllEvents = async () => {
         try {
-            const response = await fetch('/api/v1/events');
-            if (!response.ok) {
-                throw new Error('Failed to fetch events');
-            }
-            const data = await response.json();
-            setEvents(data);
+            const response = await axios.get('http://localhost:3000/api/v1/events'); // Make GET request to fetch events
+            setEvents(response.data); // Set events state with fetched data
         } catch (error) {
             console.error('Error fetching events:', error);
+            // Handle error
         }
     };
-*/
-    /*const fetchFilteredEvents = async () => {
-        try {
-            const response = await fetch('/api/v1/events'); // Fetch all events
-            if (!response.ok) {
-                throw new Error('Failed to fetch events');
-            }
-            const data = await response.json();
-            const filteredData = data.filter((event) =>
-                event.name.toLowerCase().includes(searchQuery.toLowerCase())
-            );
-            setEvents(filteredData); // Update events state with filtered events
-        } catch (error) {
-            console.error('Error fetching events:', error);
-        }
-    };
-*/
-    const handleBookClick = (event) => {
-        setSelectedEvent(event);
+
+    const handleBookClick = () => {
         setShowModal(true);
     };
 
-    const handleConfirmBooking = async () => {
-        try {
-            const response = await fetch(`/api/v1/events/${selectedEvent.eventId}/booking`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ numberOfPlaces: 1 }),
-            });
-            if (!response.ok) {
-                throw new Error('Failed to book event');
-            }
-            // Refresh events after booking
-            //fetchFilteredEvents(); // Fetch filtered events after booking
-            setShowModal(false);
-        } catch (error) {
-            console.error('Error confirming booking:', error);
-        }
+    const handleConfirmBooking = () => {
+        // Add logic to handle booking the event
+        setShowModal(false);
     };
 
     const handleCancelBooking = () => {
         setShowModal(false);
     };
 
-    const handleEventsTabClick = () => {
-        // Fetch all events when clicking on the "Events" tab
-        //fetchAllEvents();
-        // Clear search query
-        setSearchQuery('');
-    };
+    const filteredEvents = events.filter(event =>
+        event.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div className="EventsPage">
             <header className="App-header">
                 <nav className="Menu-bar">
                     <ul>
-                        <li><Link to="/login">Login</Link></li>
-                        <li><Link to="/signup">Sign Up</Link></li>
                         <li><Link to="/">Home</Link></li>
+                        <li><Link to="/events">Events</Link></li>
                         <li><Link to="/about">About</Link></li>
                         <li><Link to="/contact">Contact</Link></li>
                     </ul>
@@ -91,7 +53,6 @@ function EventsPage() {
             </header>
             <div className="Content">
                 <h1>Events</h1>
-                {/* Blue button for creating events */}
                 <Link to="/events/create" className="blue-button">Create Event</Link>
                 <input
                     type="text"
@@ -99,11 +60,11 @@ function EventsPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                {events.map((event, index) => (
+                {filteredEvents.map((event, index) => (
                     <div className="Event" key={index}>
                         <h2>{event.name}</h2>
                         <p>{event.description}</p>
-                        <button onClick={() => handleBookClick(event)}>Book</button>
+                        <button onClick={handleBookClick}>Book</button>
                         <button>View Info</button>
                     </div>
                 ))}
@@ -111,7 +72,7 @@ function EventsPage() {
             {showModal && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Are you sure you want to book {selectedEvent.name}?</h2>
+                        <h2>Are you sure you want to book this event?</h2>
                         <button onClick={handleConfirmBooking}>Yes</button>
                         <button onClick={handleCancelBooking}>No</button>
                     </div>
