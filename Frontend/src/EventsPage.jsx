@@ -8,10 +8,10 @@ function EventsPage() {
     const [selectedEvent, setSelectedEvent] = useState(null);
 
     useEffect(() => {
-        fetchAllEvents(); // Fetch all events initially
+        //fetchAllEvents(); // Fetch all events initially
     }, []);
 
-    const fetchAllEvents = async () => {
+    /*const fetchAllEvents = async () => {
         try {
             const response = await fetch('/api/v1/events');
             if (!response.ok) {
@@ -23,8 +23,8 @@ function EventsPage() {
             console.error('Error fetching events:', error);
         }
     };
-
-    const fetchFilteredEvents = async () => {
+*/
+    /*const fetchFilteredEvents = async () => {
         try {
             const response = await fetch('/api/v1/events'); // Fetch all events
             if (!response.ok) {
@@ -39,7 +39,7 @@ function EventsPage() {
             console.error('Error fetching events:', error);
         }
     };
-
+*/
     const handleBookClick = (event) => {
         setSelectedEvent(event);
         setShowModal(true);
@@ -58,7 +58,7 @@ function EventsPage() {
                 throw new Error('Failed to book event');
             }
             // Refresh events after booking
-            fetchFilteredEvents(); // Fetch filtered events after booking
+            //fetchFilteredEvents(); // Fetch filtered events after booking
             setShowModal(false);
         } catch (error) {
             console.error('Error confirming booking:', error);
@@ -71,7 +71,7 @@ function EventsPage() {
 
     const handleEventsTabClick = () => {
         // Fetch all events when clicking on the "Events" tab
-        fetchAllEvents();
+        //fetchAllEvents();
         // Clear search query
         setSearchQuery('');
     };

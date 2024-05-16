@@ -1,67 +1,60 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function EventForm({ onCreateEvent }) {
+function EventForm() {
   const [eventName, setEventName] = useState('');
   const [eventDate, setEventDate] = useState('');
   const [eventCapacity, setEventCapacity] = useState('');
   const [eventLocation, setEventLocation] = useState('');
-  const [eventBookedPlaces, setEventBookedPlaces] = useState('');
   const [eventOwner, setEventOwner] = useState('');
   const [eventCategory, setEventCategory] = useState('');
   const [eventImage, setEventImage] = useState('');
   const [eventDuration, setEventDuration] = useState('');
   const [eventDescription, setEventDescription] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [eventBookedPlaces, setEventBookedPlaces] = useState('');
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setMessage('');
+    setError('');
+
     try {
       const eventData = {
         name: eventName,
         date: eventDate,
-        capacity: eventCapacity,
-        location: eventLocation,
-        bookedPlaces: eventBookedPlaces,
-        owner: eventOwner,
-        category: eventCategory,
-        image: eventImage,
-        duration: eventDuration,
-        description: eventDescription
-        // Add more event fields as needed
+        Capacity: eventCapacity,
+        Location: eventLocation,
+        BookedPlaces: eventBookedPlaces,
+        Owner: eventOwner,
+        Category: eventCategory,
+        Image: eventImage,
+        Duration: eventDuration,
+        Description: eventDescription,
       };
-      const response = await axios.post('http://localhost:3000/api/v1/user/create_event', eventData);
-        
-        
-        // Adjust the endpoint as per your backend
-      setLoading(false);
-      if (response.status === 201) {
-        onCreateEvent(eventData);
-        setEventName('');
-        setEventDate('');
-        setEventCapacity('');
-        setEventLocation('');
-        setEventOwner('');
-        setEventCategory('');
-        setEventImage('');
-        setEventDuration('');
-        setEventDescription('');
 
-        alert('Event created successfully!');
-      } else {
-        alert('Failed to create event');
-      }
+      const response = await axios.post(
+        'http://localhost:3000/api/v1/user/create_event',
+        eventData,
+        { withCredentials: true }
+      );
+
+      setMessage(response.data.message);
+      navigate('/events');
     } catch (error) {
-      console.error('Error creating event:', error);
-      setLoading(false);
-      alert('Failed to create event');
+      console.error('Error creating event:', error.response.data); // Log response data
+      setError('Failed to create event');
     }
   };
 
   return (
     <div>
       <h1>Create Event</h1>
+      {message && <div>{message}</div>}
+      {error && <div>{error}</div>}
       <form onSubmit={handleSubmit}>
         <label>
           Name:
@@ -113,7 +106,7 @@ function EventForm({ onCreateEvent }) {
                 <input type="text" value={eventImage} onChange={(e) => setEventImage(e.target.value)} />
             </label>
             <br />
-        <button type="submit" onClick={handleSubmit} disabled={loading}>Create Event</button>
+        <button type="submit" className="blue-button" onClick={handleSubmit}>Create Event</button>
       </form>
     </div>
   );

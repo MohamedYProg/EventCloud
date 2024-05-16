@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 require('dotenv').config();
 
 AWS.config.update({
-    region: "us-west-1", // Corrected region name
+    region: "us-east-1", // Corrected region name
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
@@ -10,7 +10,7 @@ AWS.config.update({
 const db = new AWS.DynamoDB.DocumentClient();
 
 const Table_users = 'users';
-const Table_event = 'Event';
+const Table_event = 'events';
 const Table_admin = 'Admin';
 
 module.exports = {
