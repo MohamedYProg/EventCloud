@@ -1,6 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { getEventsByCategory,fetchEventById,booking,searchEventsByName } = require('../controllers/eventController.js');
+const { getAllEvents, getEventsByCategory, fetchEventById, booking, searchEventsByName } = require('../controllers/eventController.js');
+
+// Route to get all events
+router.get('/events', async (req, res) => {
+    try {
+        const events = await getAllEvents();
+        res.json(events);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch events" });
+    }
+});
 
 // Route to get events by category
 router.get('/events/category/:category', async (req, res) => {
