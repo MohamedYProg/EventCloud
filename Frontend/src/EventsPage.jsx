@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Login from './Login';
-import Signup from './Signup';
+// import Login from './Login';
+// import Signup from './Signup';
 
 function EventsPage() {
     const [showModal, setShowModal] = useState(false);
