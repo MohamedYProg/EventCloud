@@ -59,8 +59,7 @@ async function register(name, dob, email, password,/* ImageProfile*/) {
                 "name": name,
                 "dob": dob,
                 "email": email,
-                "password": password,
-                // "ImageProfile": ImageProfile
+                "password": password                // "ImageProfile": ImageProfile
                 // Add more attributes if needed
             }
         };
