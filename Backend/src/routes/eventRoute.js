@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getAllEvents, getEventsByCategory, fetchEventById, booking, searchEventsByName } = require('../controllers/eventController.js');
+const { getAllEvents, getEventsByCategory, fetchEventById, booking, searchEventsByName, deleteEvent} = require('../controllers/eventController.js');
 
 // Route to get all events
 router.get('/events', async (req, res) => {
@@ -77,6 +77,28 @@ router.get('/events/search', async (req, res) => {
     }
 });
 
+// // Route to create a new event    NOT TESTED YET
+// router.post('/create-event', async (req, res) => {
+//     const eventData = req.body;
+//     try {
+//         const newEvent = await createEvent(eventData, userName);
+//         res.status(201).json(newEvent);
+//     } catch (error) {
+//         console.error("Error creating event:", error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
+
+router.delete('/events/:id', async (req, res) => {
+    const Id = req.params.id;
+
+    try {
+        const events = await deleteEvent(Id);
+        res.json(events);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete events by id" });
+    }
+});
 
 module.exports = router;
 

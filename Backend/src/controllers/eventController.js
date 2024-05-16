@@ -1,6 +1,7 @@
 const { db, Table_event } = require('../database/database.js');
 const AWS = require('aws-sdk');
 const Event = require('../database/models/eventSchema.js');
+const Event = require('../models/Event');
 
 // Disable EC2 instance metadata service endpoint lookup
 AWS.config.httpOptions = { timeout: 5000 }; // Setting a timeout to prevent hanging
@@ -122,6 +123,40 @@ async function searchEventsByName(name) {
     }
 }
 
-module.exports = { getAllEvents, getEventsByCategory, fetchEventById, booking, searchEventsByName };
+// // Create a new event with info from the body only
+// // Not TESTED YET
+// async function createEvent(eventData) {
+//     try {
+//         const newEvent = new Event(eventData);
+
+//         // Save the new event to the database
+//         await newEvent.save();
+
+//         return newEvent; // Return the newly created event
+//     } catch (error) {
+//         console.error("Error creating event:", error);
+//         throw error; // Throw the error to be handled by the caller
+//     }
+// }
+
+async function deleteEvent(eventId) {
+    try {
+        // Check if the event exists
+        const event = await Event.findById(eventId);
+        if (!event) {
+            throw new Error('Event not found');
+        }
+
+        // Delete the event
+        await Event.findByIdAndDelete(eventId);
+
+        return { message: 'Event deleted successfully' };
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        throw error;
+    }
+}
+
+module.exports = { getAllEvents, getEventsByCategory, fetchEventById, booking, searchEventsByName, deleteEvent};
 
 // Path: Backend/src/controllers/eventController.js

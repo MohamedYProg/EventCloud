@@ -45,6 +45,21 @@ function EventsPage() {
         setShowModal(true);
     };
 
+    const handleDeleteClick = async (eventId) => {
+        try {
+            const response = await fetch(`/api/v1/events/${eventId}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Failed to delete event');
+            }
+            // Refresh events after deletion
+            fetchAllEvents();
+        } catch (error) {
+            console.error('Error deleting event:', error);
+        }
+    };
+    
     const handleConfirmBooking = async () => {
         try {
             const response = await fetch(`/api/v1/events/${selectedEvent.eventId}/booking`, {
