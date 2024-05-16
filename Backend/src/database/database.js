@@ -9,7 +9,7 @@ AWS.config.update({
 
 const db = new AWS.DynamoDB.DocumentClient();
 
-const Table_users = 'users';
+const Table_users = 'User';
 const Table_event = 'Event';
 const Table_admin = 'Admin';
 

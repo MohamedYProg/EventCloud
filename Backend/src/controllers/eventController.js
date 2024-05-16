@@ -15,7 +15,19 @@ AWS.config.update({
     retryDelayOptions: { base: 200 }
 });
 
+async function getAllEvents() {
+    try {
+        const params = {
+            TableName: Table_event
+        };
 
+        const result = await db.scan(params).promise();
+        return result.Items; // Returns an array of all event items
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        throw error; // Throw the error to be handled by the caller
+    }
+}
 async function getEventsByCategory(category) {
     try {
         const params = {
@@ -110,6 +122,6 @@ async function searchEventsByName(name) {
     }
 }
 
-module.exports = { getEventsByCategory, fetchEventById, booking, searchEventsByName };
+module.exports = { getAllEvents, getEventsByCategory, fetchEventById, booking, searchEventsByName };
 
 // Path: Backend/src/controllers/eventController.js

@@ -50,7 +50,7 @@ async function login(email, password) {
     }
 }
 
-async function register(name, dob, email, password, ImageProfile) {
+async function register(name, dob, email, password/*, ImageProfile*/) {
     try {
         const params = {
             TableName: Table_users,
@@ -60,7 +60,7 @@ async function register(name, dob, email, password, ImageProfile) {
                 "dob": dob,
                 "email": email,
                 "password": password,
-                "ImageProfile": ImageProfile
+                // "ImageProfile": ImageProfile
                 // Add more attributes if needed
             }
         };
@@ -172,6 +172,6 @@ async function user_update_event(id, name, date, Capacity, Location, BookedPlace
     }
 }
 
-module.exports = { login, register, user_create_event, user_delete_event, user_update_event }
+module.exports = { login, register, user_create_event }
 
 // Path: Backend/src/controllers/userController.js
