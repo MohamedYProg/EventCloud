@@ -1,32 +1,80 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// import Login from './Login';
-// import Signup from './Signup';
 
 function EventsPage() {
-    const [showModal, setShowModal] = useState(false);
+    const [events, setEvents] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
-    const events = [
-        { name: 'Event 1', description: 'Event 1 Description...' },
-        { name: 'Event 2', description: 'Event 2 Description...' }
-    ];
+    useEffect(() => {
+        fetchAllEvents(); // Fetch all events initially
+    }, []);
 
-    const handleBookClick = () => {
+    const fetchAllEvents = async () => {
+        try {
+            const response = await fetch('/api/v1/events');
+            if (!response.ok) {
+                throw new Error('Failed to fetch events');
+            }
+            const data = await response.json();
+            setEvents(data);
+        } catch (error) {
+            console.error('Error fetching events:', error);
+        }
+    };
+
+    const fetchFilteredEvents = async () => {
+        try {
+            const response = await fetch('/api/v1/events'); // Fetch all events
+            if (!response.ok) {
+                throw new Error('Failed to fetch events');
+            }
+            const data = await response.json();
+            const filteredData = data.filter((event) =>
+                event.name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setEvents(filteredData); // Update events state with filtered events
+        } catch (error) {
+            console.error('Error fetching events:', error);
+        }
+    };
+
+    const handleBookClick = (event) => {
+        setSelectedEvent(event);
         setShowModal(true);
     };
 
-    const handleConfirmBooking = () => {
-        setShowModal(false);
+    const handleConfirmBooking = async () => {
+        try {
+            const response = await fetch(`/api/v1/events/${selectedEvent.eventId}/booking`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ numberOfPlaces: 1 }),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to book event');
+            }
+            // Refresh events after booking
+            fetchFilteredEvents(); // Fetch filtered events after booking
+            setShowModal(false);
+        } catch (error) {
+            console.error('Error confirming booking:', error);
+        }
     };
 
     const handleCancelBooking = () => {
         setShowModal(false);
     };
 
-    const filteredEvents = events.filter(event =>
-        event.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const handleEventsTabClick = () => {
+        // Fetch all events when clicking on the "Events" tab
+        fetchAllEvents();
+        // Clear search query
+        setSearchQuery('');
+    };
 
     return (
         <div className="EventsPage">
@@ -36,7 +84,7 @@ function EventsPage() {
                         <li><Link to="/login">Login</Link></li>
                         <li><Link to="/signup">Sign Up</Link></li>
                         <li><Link to="/">Home</Link></li>
-                        <li><Link to="/events">Events</Link></li>
+                        <li><Link to="/events" onClick={handleEventsTabClick}>Events</Link></li>
                         <li><Link to="/about">About</Link></li>
                         <li><Link to="/contact">Contact</Link></li>
                     </ul>
@@ -50,11 +98,11 @@ function EventsPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                {filteredEvents.map((event, index) => (
+                {events.map((event, index) => (
                     <div className="Event" key={index}>
                         <h2>{event.name}</h2>
                         <p>{event.description}</p>
-                        <button onClick={handleBookClick}>Book</button>
+                        <button onClick={() => handleBookClick(event)}>Book</button>
                         <button>View Info</button>
                     </div>
                 ))}
@@ -62,7 +110,7 @@ function EventsPage() {
             {showModal && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Are you sure you want to book this event?</h2>
+                        <h2>Are you sure you want to book {selectedEvent.name}?</h2>
                         <button onClick={handleConfirmBooking}>Yes</button>
                         <button onClick={handleCancelBooking}>No</button>
                     </div>
