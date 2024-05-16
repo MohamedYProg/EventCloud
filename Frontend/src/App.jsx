@@ -7,6 +7,7 @@ import Login from './Login';
 import Signup from './Signup';
 import AboutPage from './AboutPage';
 import ContactUsPage from './ContactUsPage';
+import EventForm from './EventForm';
 
 // Layout component
 const Layout = ({ children }) => {
@@ -32,6 +33,7 @@ function App() {
           <Route path="/events" element={<Layout><EventsPage /></Layout>} />
           <Route path="/about" element={<Layout><AboutPage /></Layout>} />
           <Route path="/contact" element={<Layout><ContactUsPage /></Layout>} />
+          <Route path="/events/create" element={<EventForm />} />
         </Routes>
       </div>
     </Router>

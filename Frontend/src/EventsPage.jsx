@@ -84,7 +84,6 @@ function EventsPage() {
                         <li><Link to="/login">Login</Link></li>
                         <li><Link to="/signup">Sign Up</Link></li>
                         <li><Link to="/">Home</Link></li>
-                        <li><Link to="/events" onClick={handleEventsTabClick}>Events</Link></li>
                         <li><Link to="/about">About</Link></li>
                         <li><Link to="/contact">Contact</Link></li>
                     </ul>
@@ -92,6 +91,8 @@ function EventsPage() {
             </header>
             <div className="Content">
                 <h1>Events</h1>
+                {/* Blue button for creating events */}
+                <Link to="/events/create" className="blue-button">Create Event</Link>
                 <input
                     type="text"
                     placeholder="Search events..."
