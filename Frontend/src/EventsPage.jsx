@@ -11,7 +11,6 @@ function EventsPage() {
     const [responseMessage, setResponseMessage] = useState('');
 
     useEffect(() => {
-        // Fetch events when the component mounts
         getAllEvents();
     }, []);
 
