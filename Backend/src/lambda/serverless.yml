@@ -1,0 +1,24 @@
+# serverless.yml
+
+service: image-resizer-lambda
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-west-1
+
+plugins:
+- serverless-dotenv-plugin
+
+custom:
+  dotenv:
+    path: C:\Users\zeiad\Dropbox\PC\Desktop\Final_Cloud_Proj\EventCloud\Backend
+
+
+functions:
+  imageResizer:
+    handler: handler.handler
+    events:
+      - s3:
+          bucket: buckota1.1
+          event: s3:ObjectCreated:*
