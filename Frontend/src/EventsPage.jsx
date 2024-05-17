@@ -14,7 +14,6 @@ function EventsPage() {
         getAllEvents();
     }, []);
 
-    // Function to book an event
     const bookEvent = async (eventId, numberOfPlaces) => {
         try {
             const response = await axios.post(`http://localhost:3000/api/v1/${eventId}/booking`, { numberOfPlaces });
