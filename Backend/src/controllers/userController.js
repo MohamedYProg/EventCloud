@@ -50,12 +50,13 @@ async function login(email, password) {
     }
 }
 
-async function register(name, dob, email, password,/* ImageProfile*/) {
+async function register(name, userid, dob, email, password,/* ImageProfile*/) {
     try {
         const params = {
             TableName: Table_users,
             Item: {
                 "id": uuid(), // Generate a unique ID for the user
+                "userid": userid,
                 "name": name,
                 "dob": dob,
                 "email": email,
@@ -74,6 +75,27 @@ async function register(name, dob, email, password,/* ImageProfile*/) {
     }
 }
 
+async function get_user(id) {
+    try {
+        const params = {
+            TableName: Table_users,
+            Key: {
+                "id": id
+            }
+        };
+
+        // Get the item from the table
+        const result = await db.get(params).promise();
+        if (!result.Item) {
+            throw new Error("User not found");
+        }
+
+        return result.Item;
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        throw error; // Throw the error to be handled by the caller
+}
+}
 
 
 async function user_create_event(name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description) {
@@ -171,6 +193,6 @@ async function user_update_event(id, name, date, Capacity, Location, BookedPlace
     }
 }
 
-module.exports = { login, register, user_create_event, user_delete_event, user_update_event }
+module.exports = { login, register, user_create_event, user_delete_event, user_update_event, get_user}
 
 // Path: Backend/src/controllers/userController.js

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { login, register, user_create_event, user_delete_event, user_update_event } = require('../controllers/userController.js');
+const { login, register, user_create_event, user_delete_event, user_update_event, get_user } = require('../controllers/userController.js');
 
 // Route to handle user login
 router.post('/login', async (req, res) => {
@@ -35,6 +35,25 @@ router.post('/register', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+router.get('/profile/:userid', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        if (!id) {
+            
+            return res.status(400).json({ error: 'User ID is required for fetching user profile' });
+        }
+
+        const user = await get_user(id); // Use the 'get_user' function here
+        res.status(200).json({ user });
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 // Route to handle event creation
 router.post('/create_event', async (req, res) => {
