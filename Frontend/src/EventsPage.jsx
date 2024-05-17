@@ -6,6 +6,7 @@ function EventsPage() {
     const [showModal, setShowModal] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [events, setEvents] = useState([]); // State to hold events
+    const [selectedEvent, setSelectedEvent] = useState({});
 
     useEffect(() => {
         // Fetch events when the component mounts
@@ -39,13 +40,27 @@ function EventsPage() {
         event.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const handleDeleteEvent = async (id) => {
+        try {
+            const response = await axios.delete(`http://localhost:3000/api/v1/user/delete_event/${id}`);
+            if (response.status !== 200) {
+                throw new Error('Failed to delete event');
+            }
+            // Refresh events after deleting
+            getAllEvents();
+        } catch (error) {
+            console.error('Error deleting event:', error);
+        }
+    };
+
     return (
         <div className="EventsPage">
             <header className="App-header">
                 <nav className="Menu-bar">
                     <ul>
+                        <li><Link to="/login">Login</Link></li>
+                        <li><Link to="/signup">Sign Up</Link></li>
                         <li><Link to="/">Home</Link></li>
-                        <li><Link to="/events">Events</Link></li>
                         <li><Link to="/about">About</Link></li>
                         <li><Link to="/contact">Contact</Link></li>
                     </ul>
@@ -60,19 +75,20 @@ function EventsPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                {filteredEvents.map((event, index) => (
-                    <div className="Event" key={index}>
+                {events.map((event) => (
+                    <div className="Event" key={event.id}>
                         <h2>{event.name}</h2>
                         <p>{event.description}</p>
-                        <button onClick={handleBookClick}>Book</button>
+                        <button onClick={() => handleBookClick(event)}>Book</button>
                         <button>View Info</button>
+                        <button onClick={() => handleDeleteEvent(event.id)}>Delete Event</button>
                     </div>
                 ))}
             </div>
             {showModal && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Are you sure you want to book this event?</h2>
+                        <h2>Are you sure you want to book {selectedEvent.name}?</h2>
                         <button onClick={handleConfirmBooking}>Yes</button>
                         <button onClick={handleCancelBooking}>No</button>
                     </div>
