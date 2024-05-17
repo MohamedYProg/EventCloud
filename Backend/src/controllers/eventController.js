@@ -1,7 +1,6 @@
 const { db, Table_event } = require('../database/database.js');
 const AWS = require('aws-sdk');
 const Event = require('../database/models/eventSchema.js');
-const Event = require('../models/Event');
 
 // Disable EC2 instance metadata service endpoint lookup
 AWS.config.httpOptions = { timeout: 5000 }; // Setting a timeout to prevent hanging

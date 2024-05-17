@@ -11,11 +11,9 @@ const db = new AWS.DynamoDB.DocumentClient();
 
 const Table_users = 'users';
 const Table_event = 'Event';
-const Table_admin = 'Admin';
 
 module.exports = {
     db,
     Table_users,
     Table_event,
-    Table_admin
 };
