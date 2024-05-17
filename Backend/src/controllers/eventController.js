@@ -69,12 +69,22 @@ async function fetchEventById(id) {
 // Update booking function in the controller to accept numberOfPlaces parameter
 async function booking(eventId, numberOfPlaces) {
     try {
+        if (!numberOfPlaces || isNaN(numberOfPlaces)) {
+            throw new Error(`Invalid numberOfPlaces value: ${numberOfPlaces}`);
+        }
+
         // Fetch the event by ID
         const event = await fetchEventById(eventId);
 
+        // Check if event is fetched successfully
+        if (!event) {
+            throw new Error(`Event not found: ${eventId}`);
+        }
+
         // Check if there are enough places available
-        if (event.Capacity < numberOfPlaces) {
-            throw new Error(`Not enough places available. Requested: ${numberOfPlaces}, Available: ${event.Capacity - event.BookedPlaces}`);
+        const availablePlaces = event.Capacity - event.BookedPlaces;
+        if (availablePlaces < numberOfPlaces) {
+            throw new Error(`Not enough places available. Requested: ${numberOfPlaces}, Available: ${availablePlaces}`);
         }
 
         // Update the event's booked places
@@ -82,7 +92,7 @@ async function booking(eventId, numberOfPlaces) {
 
         // Define parameters for the update operation
         const params = {
-            TableName: tableEvent, // Assuming tableEvent is defined elsewhere
+            TableName: Table_event, // Ensure tableEvent is defined correctly
             Key: {
                 "id": eventId
             },
@@ -94,7 +104,9 @@ async function booking(eventId, numberOfPlaces) {
         };
 
         // Perform the update operation
-        await db.update(params).promise();
+        const updateResult = await db.update(params).promise();
+
+        console.log('Update Result:', updateResult);
 
         return event; // Return the updated event
     } catch (error) {
@@ -102,7 +114,6 @@ async function booking(eventId, numberOfPlaces) {
         throw error; // Throw the error to be handled by the caller
     }
 }
-
 
 async function searchEventsByName(name) {
     try {
