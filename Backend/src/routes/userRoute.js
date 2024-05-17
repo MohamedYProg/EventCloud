@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { login, register, user_create_event, user_delete_event, user_update_event, get_user } = require('../controllers/userController.js');
-const { uploadFileToS3, deleteFile } = require('../controllers/userController.js');
+const { login, register, user_create_event,uploadFileToS3, deleteFile,user_delete_event,user_update_event } = require('../controllers/userController.js');
 const multer = require('multer');
 
 const upload = multer();
@@ -39,8 +38,8 @@ router.post('/register', upload.single('file'), async (req, res) => {
         res.status(201).json({ message: 'Registration successful', imageUrl: result.imageUrl });
     } catch (error) {
         console.error("Error registering user:", error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 router.get('/profile/:userid', async (req, res) => {

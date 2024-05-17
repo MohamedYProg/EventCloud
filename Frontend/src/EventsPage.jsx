@@ -1,38 +1,41 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function EventsPage() {
     const [showModal, setShowModal] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [events, setEvents] = useState([]);
+    const [eventId, setEventId] = useState(null);
+    const [selectedEvent, setSelectedEvent] = useState(null); // State to hold the selected event details
+    const [numberOfPlaces, setNumberOfPlaces] = useState(0);
     const [responseMessage, setResponseMessage] = useState('');
-    const [eventId, setEventId] = useState('');
-    const [numberOfPlaces, setNumberOfPlaces] = useState(1);
-    const { category } = useParams();
+    const navigate = useNavigate(); // Initialize navigate hook
 
-    const fetchFilteredEvents = useCallback(async () => {
+    useEffect(() => {
+        getAllEvents();
+    }, []);
+
+    const getAllEvents = async () => {
         try {
-            const response = await fetch(`/api/v1/events/category/${category}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch events');
-            }
-            const data = await response.json();
-            const filteredData = data.filter((event) =>
-                event.name.toLowerCase().includes(searchQuery.toLowerCase())
-            );
-            setEvents(filteredData);
+            const response = await axios.get('http://localhost:3000/api/v1/events'); // Make GET request to fetch events
+            setEvents(response.data); // Set events state with fetched data
+        } catch (error) {
+            console.error('Error fetching events:', error);
+            // Handle error
+        }
+    };
+
+    const bookEvent = async (eventId, numberOfPlaces) => {
+        try {
+            const response = await axios.post(`http://localhost:3000/api/v1/${eventId}/booking`, { numberOfPlaces });
+            console.log('Event booked:', response.data);
+            setResponseMessage(`Event booked successfully: ${JSON.stringify(response.data)}`);
         } catch (error) {
             console.error('Error booking event:', error.response ? error.response.data : error.message);
             setResponseMessage(`Error booking event: ${error.response ? error.response.data.message : error.message}`);
         }
-    }, [category, searchQuery]); // Include category and searchQuery in the dependency array
-
-    useEffect(() => {
-        fetchFilteredEvents();
-    }, [category, fetchFilteredEvents]); // Include fetchFilteredEvents in the dependency array
-
+    };
 
     // Update handleBookClick function to prompt user for number of places
     const handleBookClick = (eventId) => {
@@ -57,17 +60,7 @@ function EventsPage() {
     // Update handleConfirmBooking function to send number of places to backend
     const handleConfirmBooking = async () => {
         try {
-            const response = await fetch(`/api/v1/events/${selectedEvent.eventId}/booking`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ numberOfPlaces: 1 }),
-            });
-            if (!response.ok) {
-                throw new Error('Failed to book event');
-            }
-            fetchFilteredEvents();
+            await bookEvent(eventId, numberOfPlaces);
             setShowModal(false);
             alert("Event booked successfully!");
         } catch (error) {
@@ -80,9 +73,25 @@ function EventsPage() {
         setShowModal(false);
     };
 
-    const handleEventsTabClick = () => {
-        fetchFilteredEvents();
-        setSearchQuery('');
+    // const filteredEvents = events.filter(event =>
+    //     event.name.toLowerCase().includes(searchQuery.toLowerCase())
+    // );
+
+    const handleDeleteEvent = async (id) => {
+        try {
+            const response = await axios.delete(`http://localhost:3000/api/v1/user/delete_event/${id}`);
+            if (response.status !== 200) {
+                throw new Error('Failed to delete event');
+            }
+            // Refresh events after deleting
+            getAllEvents();
+        } catch (error) {
+            console.error('Error deleting event:', error);
+        }
+    };
+
+    const handleUpdateEvent = async (id) => {
+        navigate(`/events/update/${id}`); // Redirect to the UpdateEventForm component
     };
 
     return (
@@ -123,14 +132,14 @@ function EventsPage() {
                     <div className="modal-content">
                         <h2>Event Details</h2>
                         <p>Name: {selectedEvent.name}</p>
-                        <p>Booked Places: {selectedEvent.bookedPlaces}</p>
+                        <p>Booked Places: {selectedEvent.BookedPlaces}</p>
                         <p>Date: {selectedEvent.date}</p>
-                        <p>Duration: {selectedEvent.duration}</p>
-                        <p>Owner: {selectedEvent.owner}</p>
-                        <p>Description: {selectedEvent.description}</p>
-                        <p>Capacity: {selectedEvent.capacity}</p>
-                        <p>Location: {selectedEvent.location}</p>
-                        <p>Category: {selectedEvent.category}</p>
+                        <p>Duration: {selectedEvent.Duration}</p>
+                        <p>Owner: {selectedEvent.Owner}</p>
+                        <p>Description: {selectedEvent.Description}</p>
+                        <p>Capacity: {selectedEvent.Capacity}</p>
+                        <p>Location: {selectedEvent.Location}</p>
+                        <p>Category: {selectedEvent.Category}</p>
                         <button onClick={handleCancelBooking}>Close</button>
                     </div>
                 </div>
