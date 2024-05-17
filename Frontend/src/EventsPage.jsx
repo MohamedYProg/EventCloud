@@ -117,12 +117,13 @@ function EventsPage() {
                         <button onClick={() => handleDeleteEvent(event.id)}>Delete Event</button>
                         <button onClick={() => handleUpdateEvent(event.id)}>Update Event</button>
 >>>>>>> 4ef54154ddc7ee30b1cee8bd4b54f9402dfdc1cc
-                    </div>
-                ))}
-            </div>
-            {showModal && selectedEvent && (
-                <div className="modal">
-                    <div className="modal-content">
+                    </div >
+                ))
+}
+            </div >
+    { showModal && selectedEvent && (
+        <div className="modal">
+            <div className="modal-content">
 <<<<<<< HEAD
                         <h2>Event Details</h2>
                         <p>Name: {selectedEvent.name}</p>
@@ -133,18 +134,18 @@ function EventsPage() {
                         <p>Owner: {selectedEvent.Owner}</p>
                         <p>Category: {selectedEvent.Category}</p>
                         <p>Duration: {selectedEvent.Duration}</p>
-                        {/* <img src={selectedEvent.image} alt={selectedEvent.name} /> */}
+{/* <img src={selectedEvent.image} alt={selectedEvent.name} /> */ }
 
-                        <button onClick={handleCancelBooking}>Close</button>
+<button onClick={handleCancelBooking}>Close</button>
 =======
                         <h2>Are you sure you want to book {selectedEvent.name}?</h2>
                         <button onClick={handleConfirmBooking}>Yes</button>
                         <button onClick={handleCancelBooking}>No</button>
 >>>>>>> 4ef54154ddc7ee30b1cee8bd4b54f9402dfdc1cc
-                    </div>
-                </div>
+                    </div >
+                </div >
             )}
-        </div>
+        </div >
     );
 }
 
