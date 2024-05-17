@@ -6,11 +6,25 @@ function EventsPage() {
     const [showModal, setShowModal] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [events, setEvents] = useState([]); // State to hold events
+    const [eventId, setEventId] = useState(null);
+    const [numberOfPlaces, setNumberOfPlaces] = useState(0);
+
 
     useEffect(() => {
         // Fetch events when the component mounts
         getAllEvents();
     }, []);
+
+    // Function to book an event:
+    const bookEvent = async (eventId, numberOfPlaces) => {
+        try {
+            const response = await axios.post(`http://localhost:3000/api/v1/events/${eventId}/booking`, { numberOfPlaces });
+            console.log('Event booked:', response.data);
+        } catch (error) {
+            console.error('Error booking event:', error);
+            // Handle error
+        }
+    };
 
     const getAllEvents = async () => {
         try {
@@ -21,15 +35,29 @@ function EventsPage() {
             // Handle error
         }
     };
-
-    const handleBookClick = () => {
-        setShowModal(true);
+    // Update handleBookClick function to prompt user for number of places
+    const handleBookClick = (eventId) => {
+        const numberOfPlaces = parseInt(prompt("Enter the number of places you want to book:", "1"));
+        if (!isNaN(numberOfPlaces)) {
+            setEventId(eventId); // Set the eventId state
+            setShowModal(true);
+            setNumberOfPlaces(numberOfPlaces);
+        }
     };
 
-    const handleConfirmBooking = () => {
-        // Add logic to handle booking the event
-        setShowModal(false);
+    // Update handleConfirmBooking function to send number of places to backend
+    const handleConfirmBooking = async () => {
+        try {
+            await bookEvent(eventId, numberOfPlaces);
+            setShowModal(false);
+            alert("Event booked successfully!");
+        } catch (error) {
+            console.error('Error booking event:', error);
+            // Handle error
+        }
     };
+
+
 
     const handleCancelBooking = () => {
         setShowModal(false);

@@ -66,40 +66,43 @@ async function fetchEventById(id) {
 }
 
 
+// Update booking function in the controller to accept numberOfPlaces parameter
 async function booking(eventId, numberOfPlaces) {
     try {
         // Fetch the event by ID
         const event = await fetchEventById(eventId);
 
-        // Update the event's capacity and booked places
-        event.Capacity -= numberOfPlaces;
+        // Check if there are enough places available
+        if (event.Capacity < numberOfPlaces) {
+            throw new Error(`Not enough places available. Requested: ${numberOfPlaces}, Available: ${event.Capacity - event.BookedPlaces}`);
+        }
+
+        // Update the event's booked places
         event.BookedPlaces += numberOfPlaces;
 
-        // Update the event in the database
+        // Define parameters for the update operation
         const params = {
-            TableName: Table_event,
+            TableName: tableEvent, // Assuming tableEvent is defined elsewhere
             Key: {
                 "id": eventId
             },
-            UpdateExpression: "SET #capacity = :capacity, BookedPlaces = :bookedPlaces",
-            ExpressionAttributeNames: {
-                "#capacity": "Capacity"
-            },
+            UpdateExpression: "SET BookedPlaces = :bookedPlaces",
             ExpressionAttributeValues: {
-                ":capacity": event.Capacity,
                 ":bookedPlaces": event.BookedPlaces
             },
             ReturnValues: "UPDATED_NEW" // Return the updated attributes
         };
 
+        // Perform the update operation
         await db.update(params).promise();
 
         return event; // Return the updated event
     } catch (error) {
-        console.error("Error booking event:", error);
+        console.error(`Error booking event (Event ID: ${eventId}, Requested Places: ${numberOfPlaces}):`, error);
         throw error; // Throw the error to be handled by the caller
     }
 }
+
 
 async function searchEventsByName(name) {
     try {
