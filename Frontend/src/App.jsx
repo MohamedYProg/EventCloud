@@ -44,3 +44,5 @@ function App() {
 }
 
 export default App;
+
+// Path: Frontend/src/App.jsx
