@@ -7,6 +7,8 @@ import Login from './Login';
 import Signup from './Signup';
 import AboutPage from './AboutPage';
 import ContactUsPage from './ContactUsPage';
+import EventForm from './EventForm';
+import UpdateEventForm from './UpdateEventForm';
 
 // Layout component
 const Layout = ({ children }) => {
@@ -30,6 +32,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/about" element={<Layout><AboutPage /></Layout>} />
           <Route path="/contact" element={<Layout><ContactUsPage /></Layout>} />
+          <Route path="/events/create" element={<EventForm />} />
+          <Route path="/events/update/:id" element={<UpdateEventForm />} />
         </Routes>
       </div>
     </Router>

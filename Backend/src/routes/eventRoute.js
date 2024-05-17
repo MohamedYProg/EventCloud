@@ -11,7 +11,22 @@ router.get('/events', async (req, res) => {
         res.status(500).json({ error: "Failed to fetch events" });
     }
 });
+router.get('/:eventId', async (req, res) => {
+    const eventId = req.params.eventId;
 
+    try {
+        const event = await fetchEventById(eventId);
+        console.log(JSON.stringify(event));
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        res.status(200).json(event);
+    } catch (error) {
+        console.error("Error fetching event:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 // Route to get events by category
 router.get('/events/category/:category', async (req, res) => {
     const category = req.params.category;
@@ -42,6 +57,10 @@ router.post('/:eventId/booking', async (req, res) => {
     const numberOfPlaces = req.body.numberOfPlaces;
 
     try {
+        if (!numberOfPlaces || isNaN(numberOfPlaces)) {
+            return res.status(400).json({ error: 'Invalid numberOfPlaces value' });
+        }
+
         // Fetch the event by ID to validate its existence
         const event = await fetchEventById(eventId);
         if (!event) {
@@ -49,7 +68,8 @@ router.post('/:eventId/booking', async (req, res) => {
         }
 
         // Check if there are enough places available
-        if (event.Capacity < numberOfPlaces) {
+        const availablePlaces = event.Capacity - event.BookedPlaces;
+        if (availablePlaces < numberOfPlaces) {
             return res.status(400).json({ error: 'Not enough places available' });
         }
 

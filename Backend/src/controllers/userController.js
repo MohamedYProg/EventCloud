@@ -171,7 +171,11 @@ async function user_update_event(id, name, date, Capacity, Location, BookedPlace
     }
 }
 
+<<<<<<< HEAD
 
 module.exports = { login, register, user_create_event }
+=======
+module.exports = { login, register, user_create_event, user_delete_event, user_update_event }
+>>>>>>> 45e5ec2839bdbc28e3dd0c40049312be62434505
 
 // Path: Backend/src/controllers/userController.js
