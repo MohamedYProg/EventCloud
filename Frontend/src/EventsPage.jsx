@@ -1,32 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
 function EventsPage() {
     const [events, setEvents] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const { category } = useParams();
 
-    useEffect(() => {
-        fetchAllEvents(); // Fetch all events initially
-    }, []);
-
-    const fetchAllEvents = async () => {
+    const fetchFilteredEvents = useCallback(async () => {
         try {
-            const response = await fetch('/api/v1/events');
-            if (!response.ok) {
-                throw new Error('Failed to fetch events');
-            }
-            const data = await response.json();
-            setEvents(data);
-        } catch (error) {
-            console.error('Error fetching events:', error);
-        }
-    };
-
-    const fetchFilteredEvents = async () => {
-        try {
-            const response = await fetch('/api/v1/events'); // Fetch all events
+            const response = await fetch(`/api/v1/events/category/${category}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch events');
             }
@@ -34,11 +18,15 @@ function EventsPage() {
             const filteredData = data.filter((event) =>
                 event.name.toLowerCase().includes(searchQuery.toLowerCase())
             );
-            setEvents(filteredData); // Update events state with filtered events
+            setEvents(filteredData);
         } catch (error) {
             console.error('Error fetching events:', error);
         }
-    };
+    }, [category, searchQuery]); // Include category and searchQuery in the dependency array
+
+    useEffect(() => {
+        fetchFilteredEvents();
+    }, [category, fetchFilteredEvents]); // Include fetchFilteredEvents in the dependency array
 
     const handleBookClick = (event) => {
         setSelectedEvent(event);
@@ -57,8 +45,7 @@ function EventsPage() {
             if (!response.ok) {
                 throw new Error('Failed to book event');
             }
-            // Refresh events after booking
-            fetchFilteredEvents(); // Fetch filtered events after booking
+            fetchFilteredEvents();
             setShowModal(false);
         } catch (error) {
             console.error('Error confirming booking:', error);
@@ -70,9 +57,7 @@ function EventsPage() {
     };
 
     const handleEventsTabClick = () => {
-        // Fetch all events when clicking on the "Events" tab
-        fetchAllEvents();
-        // Clear search query
+        fetchFilteredEvents();
         setSearchQuery('');
     };
 
