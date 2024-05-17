@@ -4,10 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import EventsPage from './EventsPage';
 import Signup from './Signup';
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -15,9 +12,7 @@ function Login() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+ 
 
   const navigate = useNavigate();
 
