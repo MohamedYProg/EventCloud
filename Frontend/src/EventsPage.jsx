@@ -18,7 +18,7 @@ function EventsPage() {
     // Function to book an event:
     const bookEvent = async (eventId, numberOfPlaces) => {
         try {
-            const response = await axios.post(`http://localhost:3000/api/v1/events/${eventId}/booking`, { numberOfPlaces });
+            const response = await axios.post(`http://localhost:3000/api/v1/${eventId}/booking`, { numberOfPlaces });
             console.log('Event booked:', response.data);
         } catch (error) {
             console.error('Error booking event:', error);
