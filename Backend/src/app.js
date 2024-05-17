@@ -21,12 +21,11 @@ app.use(cookieParser());
 // Import routes
 const userRouter = require('./routes/userRoute.js');
 // const adminRoutes = require('./routes/adminRoute.js')
-const eventsRoute = require('./routes/eventRoute.js');
+const eventsRouter = require('./routes/eventRoute.js');
 
 // Use routes
 app.use('/api/v1/user', userRouter);
-// app.use('/api/v1/admin', adminRoutes)
-app.use('/api/v1', eventsRoute);
+app.use('/api/v1/', eventsRouter);
 
 // Catch all for undefined routes
 app.use((req, res) => {
