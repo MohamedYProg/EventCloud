@@ -1,43 +1,8 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-=======
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
->>>>>>> 11eecf2b5f877228c27ecc787d96cfc4031e7e99
 
 function EventsPage() {
     const [showModal, setShowModal] = useState(false);
-<<<<<<< HEAD
-    const [searchQuery, setSearchQuery] = useState('');
-    const [events, setEvents] = useState([]);
-    const [eventId, setEventId] = useState(null);
-    const [selectedEvent, setSelectedEvent] = useState(null); // State to hold the selected event details
-    const [numberOfPlaces, setNumberOfPlaces] = useState(0);
-    const [responseMessage, setResponseMessage] = useState('');
-    const navigate = useNavigate(); // Initialize navigate hook
-
-    useEffect(() => {
-        getAllEvents();
-    }, []);
-
-    const getAllEvents = async () => {
-        try {
-            const response = await axios.get('http://localhost:3000/api/v1/events'); // Make GET request to fetch events
-            setEvents(response.data); // Set events state with fetched data
-        } catch (error) {
-            console.error('Error fetching events:', error);
-            // Handle error
-        }
-    };
-
-    const bookEvent = async (eventId, numberOfPlaces) => {
-        try {
-            const response = await axios.post(`http://localhost:3000/api/v1/${eventId}/booking`, { numberOfPlaces });
-            console.log('Event booked:', response.data);
-            setResponseMessage(`Event booked successfully: ${JSON.stringify(response.data)}`);
-=======
     const [selectedEvent, setSelectedEvent] = useState(null);
     const { category } = useParams();
 
@@ -52,7 +17,6 @@ function EventsPage() {
                 event.name.toLowerCase().includes(searchQuery.toLowerCase())
             );
             setEvents(filteredData);
->>>>>>> 11eecf2b5f877228c27ecc787d96cfc4031e7e99
         } catch (error) {
             console.error('Error booking event:', error.response ? error.response.data : error.message);
             setResponseMessage(`Error booking event: ${error.response ? error.response.data.message : error.message}`);
@@ -87,9 +51,6 @@ function EventsPage() {
     // Update handleConfirmBooking function to send number of places to backend
     const handleConfirmBooking = async () => {
         try {
-<<<<<<< HEAD
-            await bookEvent(eventId, numberOfPlaces);
-=======
             const response = await fetch(`/api/v1/events/${selectedEvent.eventId}/booking`, {
                 method: 'POST',
                 headers: {
@@ -101,7 +62,6 @@ function EventsPage() {
                 throw new Error('Failed to book event');
             }
             fetchFilteredEvents();
->>>>>>> 11eecf2b5f877228c27ecc787d96cfc4031e7e99
             setShowModal(false);
             alert("Event booked successfully!");
         } catch (error) {
@@ -114,31 +74,9 @@ function EventsPage() {
         setShowModal(false);
     };
 
-<<<<<<< HEAD
-    // const filteredEvents = events.filter(event =>
-    //     event.name.toLowerCase().includes(searchQuery.toLowerCase())
-    // );
-
-    const handleDeleteEvent = async (id) => {
-        try {
-            const response = await axios.delete(`http://localhost:3000/api/v1/user/delete_event/${id}`);
-            if (response.status !== 200) {
-                throw new Error('Failed to delete event');
-            }
-            // Refresh events after deleting
-            getAllEvents();
-        } catch (error) {
-            console.error('Error deleting event:', error);
-        }
-    };
-
-    const handleUpdateEvent = async (id) => {
-        navigate(`/events/update/${id}`); // Redirect to the UpdateEventForm component
-=======
     const handleEventsTabClick = () => {
         fetchFilteredEvents();
         setSearchQuery('');
->>>>>>> 11eecf2b5f877228c27ecc787d96cfc4031e7e99
     };
 
     return (
