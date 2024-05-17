@@ -82,6 +82,7 @@ router.post('/:eventId/booking', async (req, res) => {
     }
 });
 
+
 router.get('/events/search', async (req, res) => {
     try {
         const { name } = req.body;
