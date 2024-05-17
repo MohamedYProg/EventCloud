@@ -66,37 +66,51 @@ async function fetchEventById(id) {
 }
 
 
+// Update booking function in the controller to accept numberOfPlaces parameter
 async function booking(eventId, numberOfPlaces) {
     try {
+        if (!numberOfPlaces || isNaN(numberOfPlaces)) {
+            throw new Error(`Invalid numberOfPlaces value: ${numberOfPlaces}`);
+        }
+
         // Fetch the event by ID
         const event = await fetchEventById(eventId);
 
-        // Update the event's capacity and booked places
-        event.Capacity -= numberOfPlaces;
+        // Check if event is fetched successfully
+        if (!event) {
+            throw new Error(`Event not found: ${eventId}`);
+        }
+
+        // Check if there are enough places available
+        const availablePlaces = event.Capacity - event.BookedPlaces;
+        if (availablePlaces < numberOfPlaces) {
+            throw new Error(`Not enough places available. Requested: ${numberOfPlaces}, Available: ${availablePlaces}`);
+        }
+
+        // Update the event's booked places
         event.BookedPlaces += numberOfPlaces;
 
-        // Update the event in the database
+        // Define parameters for the update operation
         const params = {
-            TableName: Table_event,
+            TableName: Table_event, // Ensure tableEvent is defined correctly
             Key: {
                 "id": eventId
             },
-            UpdateExpression: "SET #capacity = :capacity, BookedPlaces = :bookedPlaces",
-            ExpressionAttributeNames: {
-                "#capacity": "Capacity"
-            },
+            UpdateExpression: "SET BookedPlaces = :bookedPlaces",
             ExpressionAttributeValues: {
-                ":capacity": event.Capacity,
                 ":bookedPlaces": event.BookedPlaces
             },
             ReturnValues: "UPDATED_NEW" // Return the updated attributes
         };
 
-        await db.update(params).promise();
+        // Perform the update operation
+        const updateResult = await db.update(params).promise();
+
+        console.log('Update Result:', updateResult);
 
         return event; // Return the updated event
     } catch (error) {
-        console.error("Error booking event:", error);
+        console.error(`Error booking event (Event ID: ${eventId}, Requested Places: ${numberOfPlaces}):`, error);
         throw error; // Throw the error to be handled by the caller
     }
 }

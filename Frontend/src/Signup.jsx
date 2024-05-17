@@ -31,8 +31,8 @@ function Signup() {
           email,
           password
         }, {
-      withCredentials: true // Include credentials in the request
-    });
+        withCredentials: true // Include credentials in the request
+      });
 
       setMessage(response.data.message);
       // Redirect to login page after successful signup
