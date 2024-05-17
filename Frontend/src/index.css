@@ -20,6 +20,19 @@ body {
   cursor: pointer;
 }
 
+.blue-button2 {
+  position: absolute;
+  top: 350px; /* Adjust top position as needed */
+  left: 560px; /* Adjust right position as needed */
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

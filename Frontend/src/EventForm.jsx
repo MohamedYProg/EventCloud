@@ -106,7 +106,7 @@ function EventForm() {
                 <input type="text" value={eventImage} onChange={(e) => setEventImage(e.target.value)} />
             </label>
             <br />
-        <button type="submit" className="blue-button" onClick={handleSubmit}>Create Event</button>
+        <button type="submit" className="blue-button2" onClick={handleSubmit}>Create Event</button>
       </form>
     </div>
   );

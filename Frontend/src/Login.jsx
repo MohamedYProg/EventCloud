@@ -4,19 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import EventsPage from './EventsPage';
 import Signup from './Signup';
-
-
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [isLogin, setIsLogin] = useState(true);
-
   const navigate = useNavigate();
-
-
-
   const handleLogin = async () => {
     setMessage('');
     if (isLogin) {
@@ -58,7 +52,6 @@ function Login() {
           </ul>
         </nav>
       </header>
-
       <div>
         <h2>Login</h2>
         {error && <div>{error}</div>}
@@ -77,5 +70,4 @@ function Login() {
     </div>
   );
 }
-
 export default Login;
