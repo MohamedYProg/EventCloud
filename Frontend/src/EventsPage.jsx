@@ -123,14 +123,14 @@ function EventsPage() {
                     <div className="modal-content">
                         <h2>Event Details</h2>
                         <p>Name: {selectedEvent.name}</p>
-                        <p>Booked Places: {selectedEvent.BookedPlaces}</p>
+                        <p>Booked Places: {selectedEvent.bookedPlaces}</p>
                         <p>Date: {selectedEvent.date}</p>
-                        <p>Duration: {selectedEvent.Duration}</p>
-                        <p>Owner: {selectedEvent.Owner}</p>
-                        <p>Description: {selectedEvent.Description}</p>
-                        <p>Capacity: {selectedEvent.Capacity}</p>
-                        <p>Location: {selectedEvent.Location}</p>
-                        <p>Category: {selectedEvent.Category}</p>
+                        <p>Duration: {selectedEvent.duration}</p>
+                        <p>Owner: {selectedEvent.owner}</p>
+                        <p>Description: {selectedEvent.description}</p>
+                        <p>Capacity: {selectedEvent.capacity}</p>
+                        <p>Location: {selectedEvent.location}</p>
+                        <p>Category: {selectedEvent.category}</p>
                         <button onClick={handleCancelBooking}>Close</button>
                     </div>
                 </div>

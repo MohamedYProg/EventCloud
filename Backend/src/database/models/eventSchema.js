@@ -4,14 +4,14 @@ const eventSchema = new dynamoose.Schema({
     id: String,
     name: String,
     date: Date,
-    Capacity: Number,
-    Location: String,
-    BookedPlaces: Number,
-    Owner: String,
-    Category: Number,
-    Image: String,
-    Duration: Number,
-    Description: String
+    capacity: Number,
+    location: String,
+    bookedPlaces: Number,
+    owner: String,
+    category: Number,
+    image: String,
+    duration: Number,
+    description: String
 });
 
 const Event = dynamoose.model('Event', eventSchema);

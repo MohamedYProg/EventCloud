@@ -120,8 +120,44 @@ async function login(email, password) {
     }
 }
 
+async function register(name, userid, dob, email, password,/* ImageProfile*/) {
+    try {
+        const params = {
+            TableName: Table_users,
+            Item: {
+                "id": uuid(), // Generate a unique ID for the user
+                "userid": userid,
+                "name": name,
+                "dob": dob,
+                "email": email,
+                "password": password                // "ImageProfile": ImageProfile
+                // Add more attributes if needed
+            }
+        };
 
 
+
+async function get_user(id) {
+    try {
+        const params = {
+            TableName: Table_users,
+            Key: {
+                "id": id
+            }
+        };
+
+        // Get the item from the table
+        const result = await db.get(params).promise();
+        if (!result.Item) {
+            throw new Error("User not found");
+        }
+
+        return result.Item;
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        throw error; // Throw the error to be handled by the caller
+}
+}
 
 
 async function user_create_event(name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description) {
@@ -129,19 +165,16 @@ async function user_create_event(name, date, Capacity, Location, BookedPlaces, O
         const params = {
             TableName: Table_event,
             Item: {
-                "id": uuid(), // Generate a unique ID for the user
+                "id": uuid(), // Generate a unique ID for the event
                 "name": name,
                 "date": date,
-                "Capacity": Capacity,
-                "Location": Location,
-                "BookedPlaces": BookedPlaces,
-                "Owner": Owner,
-                "Category": Category,
-                "Image": Image,
-                "Duration": Duration,
-                "Description": Description,
-
-
+                "capacity": capacity,
+                "location": location,
+                "owner": owner,
+                "category": category,
+                "image": image,
+                "duration": duration,
+                "description": description
                 // Add more attributes if needed
             }
         };
@@ -175,49 +208,48 @@ async function user_delete_event(id) {
     }
 }
 
-async function user_update_event(id, name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description) {
+async function user_update_event(id, eventData) {
     try {
         const params = {
             TableName: Table_event,
             Key: {
                 "id": id
             },
-            UpdateExpression: "set #name = :name, #date = :date, #Capacity = :Capacity, #Location = :Location, #BookedPlaces = :BookedPlaces, #Owner = :Owner, #Category = :Category, #Image = :Image, #Duration = :Duration, #Description = :Description",
+            UpdateExpression: "set #name = :name, #date = :date, #capacity = :capacity, #location = :location, #owner = :owner, #category = :category, #image = :image, #duration = :duration, #description = :description",
             ExpressionAttributeNames: {
                 "#name": "name",
                 "#date": "date",
-                "#Capacity": "Capacity",
-                "#Location": "Location",
-                "#BookedPlaces": "BookedPlaces",
-                "#Owner": "Owner",
-                "#Category": "Category",
-                "#Image": "Image",
-                "#Duration": "Duration",
-                "#Description": "Description"
+                "#capacity": "capacity",
+                "#location": "location",
+                "#owner": "owner",
+                "#category": "category",
+                "#image": "image",
+                "#duration": "duration",
+                "#description": "description"
             },
             ExpressionAttributeValues: {
-                ":name": name,
-                ":date": date,
-                ":Capacity": Capacity,
-                ":Location": Location,
-                ":BookedPlaces": BookedPlaces,
-                ":Owner": Owner,
-                ":Category": Category,
-                ":Image": Image,
-                ":Duration": Duration,
-                ":Description": Description
+                ":name": eventData.name,
+                ":date": eventData.date,
+                ":capacity": eventData.capacity,
+                ":location": eventData.location,
+                ":owner": eventData.owner,
+                ":category": eventData.category,
+                ":image": eventData.image,
+                ":duration": eventData.duration,
+                ":description": eventData.description
             }
         };
 
         // Update the item in the table
         await db.update(params).promise();
 
-        return { message: 'event updated successfully' };
+        return { message: 'Event updated successfully' };
     } catch (error) {
-        console.error("Error event not updated:", error);
+        console.error("Error updating event:", error);
         throw error; // Throw the error to be handled by the caller
     }
 }
+
 
 
 // async function uploadImage(image) {
@@ -242,6 +274,6 @@ async function user_update_event(id, name, date, Capacity, Location, BookedPlace
 
 
 
-module.exports = { login, register, user_create_event,user_update_event,user_delete_event,uploadFileToS3 ,deleteFile}
+module.exports = { login, register, user_create_event,user_update_event,user_delete_event,uploadFileToS3 ,deleteFile, get_user}
 
 // Path: Backend/src/controllers/userController.js

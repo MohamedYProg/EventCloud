@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { login, register, user_create_event, user_delete_event, user_update_event } = require('../controllers/userController.js');
+const { login, register, user_create_event, user_delete_event, user_update_event, get_user } = require('../controllers/userController.js');
 const { uploadFileToS3, deleteFile } = require('../controllers/userController.js');
 const multer = require('multer');
 
 const upload = multer();
-
 
 // Route to handle user login
 router.post('/login', async (req, res) => {
@@ -44,6 +43,25 @@ router.post('/register', upload.single('file'), async (req, res) => {
     }
 });
 
+router.get('/profile/:userid', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        if (!id) {
+
+            return res.status(400).json({ error: 'User ID is required for fetching user profile' });
+        }
+
+        const user = await get_user(id); // Use the 'get_user' function here
+        res.status(200).json({ user });
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
 // Route to handle event creation
 router.post('/create_event', async (req, res) => {
     const { name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description } = req.body;
@@ -62,19 +80,15 @@ router.post('/create_event', async (req, res) => {
 });
 
 // Route to handle event update
-router.put('/update_event', async (req, res) => {
-    const { id, name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description } = req.body;
+router.put('/event/:id', async (req, res) => {
+    const { id } = req.params;
+    const eventData = req.body;
 
     try {
-        if (!id || !name || !date || !Capacity || !Location || !Owner || !Category || !Image || !Duration || !Description) {
-            return res.status(400).json({ error: 'All fields are required for updating an event' });
-        }
-
-        const result = await user_update_event(id, name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description);
+        await Event.update({ id }, eventData);
         res.status(200).json({ message: 'Event updated successfully' });
     } catch (error) {
         console.error("Error updating event:", error);
-
     }
 
 }
@@ -116,6 +130,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 // Route to handle event deletion
 router.delete('/delete_event/:id', async (req, res) => {
