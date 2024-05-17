@@ -50,6 +50,11 @@ function EventForm() {
     }
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setEventImage(file);
+  };
+
   return (
     <div>
       <h1>Create Event</h1>
@@ -103,7 +108,8 @@ function EventForm() {
         <br />
         <label>
           Image:
-          <input type="text" value={eventImage} onChange={(e) => setEventImage(e.target.value)} />
+          {/* Now I want to make a place holder for image uploads: */}
+          <input type="file" onChange={handleImageChange} />
         </label>
         <br />
         <button type="submit" className="blue-button" onClick={handleSubmit}>Create Event</button>
