@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import axios from 'axios'; // Import axios for making HTTP requests
 
 function EventsPage() {
@@ -7,6 +7,7 @@ function EventsPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [events, setEvents] = useState([]); // State to hold events
     const [selectedEvent, setSelectedEvent] = useState({});
+    const navigate = useNavigate(); // Initialize navigate hook
 
     useEffect(() => {
         // Fetch events when the component mounts
@@ -17,6 +18,7 @@ function EventsPage() {
         try {
             const response = await axios.get('http://localhost:3000/api/v1/events'); // Make GET request to fetch events
             setEvents(response.data); // Set events state with fetched data
+            return response.data;
         } catch (error) {
             console.error('Error fetching events:', error);
             // Handle error
@@ -53,6 +55,11 @@ function EventsPage() {
         }
     };
 
+    // Inside the EventsPage component
+    const handleUpdateEvent = async (id) => {
+        navigate(`/events/update/${id}`); // Redirect to the UpdateEventForm component
+    };
+
     return (
         <div className="EventsPage">
             <header className="App-header">
@@ -82,6 +89,7 @@ function EventsPage() {
                         <button onClick={() => handleBookClick(event)}>Book</button>
                         <button>View Info</button>
                         <button onClick={() => handleDeleteEvent(event.id)}>Delete Event</button>
+                        <button onClick={() => handleUpdateEvent(event.id)}>Update Event</button>
                     </div>
                 ))}
             </div>
