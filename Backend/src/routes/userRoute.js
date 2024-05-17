@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { login, register, user_create_event, user_delete_event, user_update_event } = require('../controllers/userController.js');
+const { login, register, user_create_event,uploadFileToS3, deleteFile,user_delete_event,user_update_event } = require('../controllers/userController.js');
+const multer = require('multer');
+
+const upload = multer();
 
 // Route to handle user login
 router.post('/login', async (req, res) => {
@@ -20,20 +23,23 @@ router.post('/login', async (req, res) => {
 });
 
 // Route to handle user registration
-router.post('/register', async (req, res) => {
+router.post('/register', upload.single('file'), async (req, res) => {
+    const file = req.file;
     const { name, dob, email, password } = req.body;
 
     try {
-        if (!name || !dob || !email || !password) {
-            return res.status(400).json({ error: 'All fields are required for registration' });
+        if (!name || !dob || !email || !password || !file) {
+            return res.status(400).json({ error: 'All fields including image are required for registration' });
         }
 
-        const result = await register(name, dob, email, password);
-        res.status(201).json({ message: 'Registration successful' });
+        // Call the register function from the controller with file details
+        const result = await register(name, dob, email, password, file.buffer, file.originalname, file.mimetype);
+
+        res.status(201).json({ message: 'Registration successful', imageUrl: result.imageUrl });
     } catch (error) {
         console.error("Error registering user:", error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // Route to handle event creation
