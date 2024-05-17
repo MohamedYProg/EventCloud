@@ -1,4 +1,3 @@
-// app.js
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
@@ -8,8 +7,8 @@ const bodyParser = require('body-parser');
 // Configure CORS
 const corsOptions = {
     origin: 'http://localhost:3001',
-    optionsSuccessStatus: 200, // For some legacy browsers
-    credentials: true // Allow credentials (cookies, authorization headers, etc.)
+    optionsSuccessStatus: 200,
+    credentials: true
 };
 
 app.use(cors(corsOptions));
@@ -20,7 +19,6 @@ app.use(cookieParser());
 
 // Import routes
 const userRouter = require('./routes/userRoute.js');
-// const adminRoutes = require('./routes/adminRoute.js')
 const eventsRouter = require('./routes/eventRoute.js');
 
 // Use routes

@@ -37,7 +37,6 @@ function EventsPage() {
         }
     };
 
-
     // Update handleBookClick function to prompt user for number of places
     const handleBookClick = (eventId) => {
         const numberOfPlaces = parseInt(prompt("Enter the number of places you want to book:", "1"));
