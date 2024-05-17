@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { login, register, user_create_event, user_delete_event, user_update_event } = require('../controllers/userController.js');
-const { login, register, user_create_event,uploadFileToS3, deleteFile } = require('../controllers/userController.js');
+const { uploadFileToS3, deleteFile } = require('../controllers/userController.js');
 const multer = require('multer');
 
 const upload = multer();
