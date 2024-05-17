@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+=======
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link, useParams } from 'react-router-dom';
+>>>>>>> 11eecf2b5f877228c27ecc787d96cfc4031e7e99
 
 function EventsPage() {
     const [showModal, setShowModal] = useState(false);
+<<<<<<< HEAD
     const [searchQuery, setSearchQuery] = useState('');
     const [events, setEvents] = useState([]);
     const [eventId, setEventId] = useState(null);
@@ -31,11 +37,31 @@ function EventsPage() {
             const response = await axios.post(`http://localhost:3000/api/v1/${eventId}/booking`, { numberOfPlaces });
             console.log('Event booked:', response.data);
             setResponseMessage(`Event booked successfully: ${JSON.stringify(response.data)}`);
+=======
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const { category } = useParams();
+
+    const fetchFilteredEvents = useCallback(async () => {
+        try {
+            const response = await fetch(`/api/v1/events/category/${category}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch events');
+            }
+            const data = await response.json();
+            const filteredData = data.filter((event) =>
+                event.name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setEvents(filteredData);
+>>>>>>> 11eecf2b5f877228c27ecc787d96cfc4031e7e99
         } catch (error) {
             console.error('Error booking event:', error.response ? error.response.data : error.message);
             setResponseMessage(`Error booking event: ${error.response ? error.response.data.message : error.message}`);
         }
-    };
+    }, [category, searchQuery]); // Include category and searchQuery in the dependency array
+
+    useEffect(() => {
+        fetchFilteredEvents();
+    }, [category, fetchFilteredEvents]); // Include fetchFilteredEvents in the dependency array
 
 
     // Update handleBookClick function to prompt user for number of places
@@ -61,7 +87,21 @@ function EventsPage() {
     // Update handleConfirmBooking function to send number of places to backend
     const handleConfirmBooking = async () => {
         try {
+<<<<<<< HEAD
             await bookEvent(eventId, numberOfPlaces);
+=======
+            const response = await fetch(`/api/v1/events/${selectedEvent.eventId}/booking`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ numberOfPlaces: 1 }),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to book event');
+            }
+            fetchFilteredEvents();
+>>>>>>> 11eecf2b5f877228c27ecc787d96cfc4031e7e99
             setShowModal(false);
             alert("Event booked successfully!");
         } catch (error) {
@@ -74,6 +114,7 @@ function EventsPage() {
         setShowModal(false);
     };
 
+<<<<<<< HEAD
     // const filteredEvents = events.filter(event =>
     //     event.name.toLowerCase().includes(searchQuery.toLowerCase())
     // );
@@ -93,6 +134,11 @@ function EventsPage() {
 
     const handleUpdateEvent = async (id) => {
         navigate(`/events/update/${id}`); // Redirect to the UpdateEventForm component
+=======
+    const handleEventsTabClick = () => {
+        fetchFilteredEvents();
+        setSearchQuery('');
+>>>>>>> 11eecf2b5f877228c27ecc787d96cfc4031e7e99
     };
 
     return (
