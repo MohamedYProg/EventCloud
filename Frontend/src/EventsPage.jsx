@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 function EventsPage() {
     const [showModal, setShowModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [events, setEvents] = useState([]);
+    const [responseMessage, setResponseMessage] = useState('');
+    const [eventId, setEventId] = useState('');
+    const [numberOfPlaces, setNumberOfPlaces] = useState(1);
     const { category } = useParams();
 
     const fetchFilteredEvents = useCallback(async () => {
