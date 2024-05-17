@@ -8,21 +8,22 @@ function EventsPage() {
     const [events, setEvents] = useState([]); // State to hold events
     const [eventId, setEventId] = useState(null);
     const [numberOfPlaces, setNumberOfPlaces] = useState(0);
-
+    const [responseMessage, setResponseMessage] = useState('');
 
     useEffect(() => {
         // Fetch events when the component mounts
         getAllEvents();
     }, []);
 
-    // Function to book an event:
+    // Function to book an event
     const bookEvent = async (eventId, numberOfPlaces) => {
         try {
             const response = await axios.post(`http://localhost:3000/api/v1/${eventId}/booking`, { numberOfPlaces });
             console.log('Event booked:', response.data);
+            setResponseMessage(`Event booked successfully: ${JSON.stringify(response.data)}`);
         } catch (error) {
-            console.error('Error booking event:', error);
-            // Handle error
+            console.error('Error booking event:', error.response ? error.response.data : error.message);
+            setResponseMessage(`Error booking event: ${error.response ? error.response.data.message : error.message}`);
         }
     };
 
@@ -35,13 +36,14 @@ function EventsPage() {
             // Handle error
         }
     };
+
     // Update handleBookClick function to prompt user for number of places
     const handleBookClick = (eventId) => {
         const numberOfPlaces = parseInt(prompt("Enter the number of places you want to book:", "1"));
         if (!isNaN(numberOfPlaces)) {
             setEventId(eventId); // Set the eventId state
-            setShowModal(true);
             setNumberOfPlaces(numberOfPlaces);
+            setShowModal(true);
         }
     };
 
@@ -56,8 +58,6 @@ function EventsPage() {
             // Handle error
         }
     };
-
-
 
     const handleCancelBooking = () => {
         setShowModal(false);
@@ -92,7 +92,7 @@ function EventsPage() {
                     <div className="Event" key={index}>
                         <h2>{event.name}</h2>
                         <p>{event.description}</p>
-                        <button onClick={handleBookClick}>Book</button>
+                        <button onClick={() => handleBookClick(event.id)}>Book</button>
                         <button>View Info</button>
                     </div>
                 ))}
@@ -100,12 +100,13 @@ function EventsPage() {
             {showModal && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Are you sure you want to book this event?</h2>
+                        <h2>Are you sure you want to book {numberOfPlaces} places for this event?</h2>
                         <button onClick={handleConfirmBooking}>Yes</button>
                         <button onClick={handleCancelBooking}>No</button>
                     </div>
                 </div>
             )}
+            {responseMessage && <p>{responseMessage}</p>}
         </div>
     );
 }
