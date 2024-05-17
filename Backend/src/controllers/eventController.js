@@ -1,34 +1,36 @@
 const { db, Table_event } = require('../database/database.js');
 const AWS = require('aws-sdk');
 const Event = require('../database/models/eventSchema.js');
+const { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 
 // Disable EC2 instance metadata service endpoint lookup
-AWS.config.httpOptions = { timeout: 5000 }; // Setting a timeout to prevent hanging
+AWS.config.httpOptions = { timeout: 5000 };
 
-// Initialize AWS with your credentials
 // Initialize AWS with your credentials and region
 AWS.config.update({
-    region: "us-west-1", // Update with your desired region
+    region: "us-west-1",
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     maxRetries: 10,
     retryDelayOptions: { base: 200 }
 });
 
-async function getAllEvents() {
+async function getAllEvents(req, res) {
     try {
         const params = {
             TableName: Table_event
         };
 
         const result = await db.scan(params).promise();
-        return result.Items; // Returns an array of all event items
+        res.status(200).json(result.Items);
     } catch (error) {
         console.error("Error fetching events:", error);
-        throw error; // Throw the error to be handled by the caller
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
-async function getEventsByCategory(category) {
+
+async function getEventsByCategory(req, res) {
+    const { category } = req.params;
     try {
         const params = {
             TableName: Table_event,
@@ -36,63 +38,55 @@ async function getEventsByCategory(category) {
             ExpressionAttributeValues: {
                 ":Category": category
             }
-            // You can add more parameters here if needed, like sorting or limiting results
         };
 
         const result = await db.scan(params).promise();
-        return result.Items; // Returns an array of event items with the specified category
+        res.status(200).json(result.Items);
     } catch (error) {
         console.error("Error fetching events by category:", error);
-        throw error; // Throw the error to be handled by the caller
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 
+async function fetchEventById(req, res) {
+    const { id } = req.params;
 
-async function fetchEventById(id) {
     try {
-        const params = {
-            TableName: Table_event,
-            Key: {
-                "id": id
-            }
-        };
+        const event = await Event.get(id);
 
-        const result = await db.get(params).promise();
-        return result.Item; // Returns the event item with the specified ID
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        res.status(200).json(event);
     } catch (error) {
-        console.error("Error fetching event by ID:", error);
-        throw error; // Throw the error to be handled by the caller
+        console.error('Error fetching event details:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 
-
-// Update booking function in the controller to accept numberOfPlaces parameter
-async function booking(eventId, numberOfPlaces) {
+async function booking(req, res) {
+    const { eventId, numberOfPlaces } = req.body;
     try {
         if (!numberOfPlaces || isNaN(numberOfPlaces)) {
-            throw new Error(`Invalid numberOfPlaces value: ${numberOfPlaces}`);
+            return res.status(400).json({ error: `Invalid numberOfPlaces value: ${numberOfPlaces}` });
         }
 
-        // Fetch the event by ID
-        const event = await fetchEventById(eventId);
+        const event = await Event.get(eventId);
 
-        // Check if event is fetched successfully
         if (!event) {
-            throw new Error(`Event not found: ${eventId}`);
+            return res.status(404).json({ error: `Event not found: ${eventId}` });
         }
 
-        // Check if there are enough places available
         const availablePlaces = event.Capacity - event.BookedPlaces;
         if (availablePlaces < numberOfPlaces) {
-            throw new Error(`Not enough places available. Requested: ${numberOfPlaces}, Available: ${availablePlaces}`);
+            return res.status(400).json({ error: `Not enough places available. Requested: ${numberOfPlaces}, Available: ${availablePlaces}` });
         }
 
-        // Update the event's booked places
         event.BookedPlaces += numberOfPlaces;
 
-        // Define parameters for the update operation
         const params = {
-            TableName: Table_event, // Ensure tableEvent is defined correctly
+            TableName: Table_event,
             Key: {
                 "id": eventId
             },
@@ -100,28 +94,25 @@ async function booking(eventId, numberOfPlaces) {
             ExpressionAttributeValues: {
                 ":bookedPlaces": event.BookedPlaces
             },
-            ReturnValues: "UPDATED_NEW" // Return the updated attributes
+            ReturnValues: "UPDATED_NEW"
         };
 
-        // Perform the update operation
         const updateResult = await db.update(params).promise();
-
-        console.log('Update Result:', updateResult);
-
-        return event; // Return the updated event
+        res.status(200).json(updateResult.Attributes);
     } catch (error) {
         console.error(`Error booking event (Event ID: ${eventId}, Requested Places: ${numberOfPlaces}):`, error);
-        throw error; // Throw the error to be handled by the caller
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 
-async function searchEventsByName(name) {
+async function searchEventsByName(req, res) {
+    const { name } = req.query;
     try {
         const params = {
             TableName: Table_event,
             FilterExpression: "contains (#eventName, :name)",
             ExpressionAttributeNames: {
-                "#eventName": "name" // Alias "name" to "#eventName"
+                "#eventName": "name"
             },
             ExpressionAttributeValues: {
                 ":name": name
@@ -129,13 +120,11 @@ async function searchEventsByName(name) {
         };
 
         const result = await db.scan(params).promise();
-        return result.Items; // Returns an array of event items with names containing the specified query
+        res.status(200).json(result.Items);
     } catch (error) {
         console.error("Error searching events by name:", error);
-        throw error; // Throw the error to be handled by the caller
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 
 module.exports = { getAllEvents, getEventsByCategory, fetchEventById, booking, searchEventsByName };
-
-// Path: Backend/src/controllers/eventController.js

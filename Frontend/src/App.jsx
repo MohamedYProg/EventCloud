@@ -9,6 +9,7 @@ import AboutPage from './AboutPage';
 import ContactUsPage from './ContactUsPage';
 import EventForm from './EventForm';
 import UpdateEventForm from './UpdateEventForm';
+import ProfilePage from './ProfilePage';
 
 // Layout component
 const Layout = ({ children }) => {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/contact" element={<Layout><ContactUsPage /></Layout>} />
           <Route path="/events/create" element={<EventForm />} />
           <Route path="/events/update/:id" element={<UpdateEventForm />} />
+          <Route path="/profile" element={<Layout><ProfilePage /></Layout>} />
         </Routes>
       </div>
     </Router>
@@ -44,3 +46,5 @@ function App() {
 }
 
 export default App;
+
+// Path: Frontend/src/App.jsx
