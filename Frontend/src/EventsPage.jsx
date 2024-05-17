@@ -1,63 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios'; // Import axios for making HTTP requests
+import axios from 'axios';
 
 function EventsPage() {
     const [showModal, setShowModal] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [events, setEvents] = useState([]); // State to hold events
-    const [eventId, setEventId] = useState(null);
-    const [numberOfPlaces, setNumberOfPlaces] = useState(0);
-
+    const [events, setEvents] = useState([]);
+    const [selectedEvent, setSelectedEvent] = useState(null); // State to hold the selected event details
 
     useEffect(() => {
-        // Fetch events when the component mounts
         getAllEvents();
     }, []);
 
-    // Function to book an event:
-    const bookEvent = async (eventId, numberOfPlaces) => {
+    const getAllEvents = async () => {
         try {
-            const response = await axios.post(`http://localhost:3000/api/v1/events/${eventId}/booking`, { numberOfPlaces });
-            console.log('Event booked:', response.data);
+            const response = await axios.get('http://localhost:3000/api/v1/events');
+            setEvents(response.data);
         } catch (error) {
-            console.error('Error booking event:', error);
-            // Handle error
+            console.error('Error fetching events:', error);
         }
     };
 
-    const getAllEvents = async () => {
-        try {
-            const response = await axios.get('http://localhost:3000/api/v1/events'); // Make GET request to fetch events
-            setEvents(response.data); // Set events state with fetched data
-        } catch (error) {
-            console.error('Error fetching events:', error);
-            // Handle error
-        }
-    };
-    // Update handleBookClick function to prompt user for number of places
     const handleBookClick = (eventId) => {
         const numberOfPlaces = parseInt(prompt("Enter the number of places you want to book:", "1"));
         if (!isNaN(numberOfPlaces)) {
-            setEventId(eventId); // Set the eventId state
+            setSelectedEvent(events.find(event => event.id === eventId)); // Find the selected event
             setShowModal(true);
-            setNumberOfPlaces(numberOfPlaces);
         }
-    };
+    };//http://localhost:3000/api/v1/f3e3b796-411f-4d18-a5ff-091b6bedfa34
 
-    // Update handleConfirmBooking function to send number of places to backend
-    const handleConfirmBooking = async () => {
+    const handleViewInfo = async (eventId) => {
         try {
-            await bookEvent(eventId, numberOfPlaces);
-            setShowModal(false);
-            alert("Event booked successfully!");
+            const response = await axios.get(`http://localhost:3000/api/v1/${eventId}`);
+            setSelectedEvent(response.data);
+            setShowModal(true);
         } catch (error) {
-            console.error('Error booking event:', error);
-            // Handle error
+            console.error('Error fetching event details:', error);
         }
     };
-
-
 
     const handleCancelBooking = () => {
         setShowModal(false);
@@ -92,17 +72,26 @@ function EventsPage() {
                     <div className="Event" key={index}>
                         <h2>{event.name}</h2>
                         <p>{event.description}</p>
-                        <button onClick={handleBookClick}>Book</button>
-                        <button>View Info</button>
+                        <button onClick={() => handleBookClick(event.id)}>Book</button>
+                        <button onClick={() => handleViewInfo(event.id)}>View Info</button>
                     </div>
                 ))}
             </div>
-            {showModal && (
+            {showModal && selectedEvent && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Are you sure you want to book this event?</h2>
-                        <button onClick={handleConfirmBooking}>Yes</button>
-                        <button onClick={handleCancelBooking}>No</button>
+                        <h2>Event Details</h2>
+                        <p>Name: {selectedEvent.name}</p>
+                        <p>Description: {selectedEvent.Description}</p>
+                        <p>Location: {selectedEvent.Location}</p>
+                        <p>Capacity: {selectedEvent.Capacity}</p>
+                        <p>Booked Places: {selectedEvent.BookedPlaces}</p>
+                        <p>Owner: {selectedEvent.Owner}</p>
+                        <p>Category: {selectedEvent.Category}</p>
+                        <p>Duration: {selectedEvent.Duration}</p>
+                        {/* <img src={selectedEvent.image} alt={selectedEvent.name} /> */}
+
+                        <button onClick={handleCancelBooking}>Close</button>
                     </div>
                 </div>
             )}
