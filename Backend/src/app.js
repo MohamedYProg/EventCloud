@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
+
 // Configure CORS
 const corsOptions = {
     origin: 'http://localhost:3001',
