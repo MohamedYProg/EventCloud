@@ -41,7 +41,7 @@ router.get('/profile/:userid', async (req, res) => {
 
     try {
         if (!id) {
-            
+
             return res.status(400).json({ error: 'User ID is required for fetching user profile' });
         }
 
@@ -73,21 +73,19 @@ router.post('/create_event', async (req, res) => {
 });
 
 // Route to handle event update
-router.put('/update_event', async (req, res) => {
-    const { id, name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description } = req.body;
+router.put('/event/:id', async (req, res) => {
+    const { id } = req.params;
+    const eventData = req.body;
 
     try {
-        if (!id || !name || !date || !Capacity || !Location || !Owner || !Category || !Image || !Duration || !Description) {
-            return res.status(400).json({ error: 'All fields are required for updating an event' });
-        }
-
-        const result = await user_update_event(id, name, date, Capacity, Location, BookedPlaces, Owner, Category, Image, Duration, Description);
+        await Event.update({ id }, eventData);
         res.status(200).json({ message: 'Event updated successfully' });
     } catch (error) {
-        console.error("Error updating event:", error);
+        console.error('Error updating event:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 // Route to handle event deletion
 router.delete('/delete_event/:id', async (req, res) => {

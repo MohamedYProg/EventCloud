@@ -49,19 +49,19 @@ async function getEventsByCategory(category) {
 
 
 async function fetchEventById(id) {
-    try {
-        const params = {
-            TableName: Table_event,
-            Key: {
-                "id": id
-            }
-        };
+    const { id } = req.params;
 
-        const result = await db.get(params).promise();
-        return result.Item; // Returns the event item with the specified ID
+    try {
+        const event = await Event.get(id);
+
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        res.status(200).json(event);
     } catch (error) {
-        console.error("Error fetching event by ID:", error);
-        throw error; // Throw the error to be handled by the caller
+        console.error('Error fetching event details:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 
